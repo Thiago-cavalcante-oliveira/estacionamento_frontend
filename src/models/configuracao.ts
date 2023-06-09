@@ -1,6 +1,6 @@
-import {entitty} from "@/models/entitty";
+import {Entitty} from "@/models/entitty";
 
-export class Configuracao extends entitty{
+export class Configuracao extends Entitty{
     valorHora!: number
     valorMinutoMulta!: number
     inicioExpediente!: Date

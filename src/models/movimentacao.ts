@@ -1,6 +1,6 @@
-import {entitty} from "@/models/entitty";
+import {Entitty} from "@/models/entitty";
 
-export class Movimentacao extends entitty{
+export class Movimentacao extends Entitty{
 
     veiculo!: string
     condutor!: string

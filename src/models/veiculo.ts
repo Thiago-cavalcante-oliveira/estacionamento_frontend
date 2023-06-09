@@ -1,10 +1,12 @@
-import {entitty} from "@/models/entitty";
+import {Entitty} from "@/models/entitty";
+import {Tipo} from "@/models/tipo";
+import {Modelo} from "@/models/modelo";
 
-export class veiculo extends entitty{
+export class Veiculo extends Entitty{
     placa!: string
-    modelo!: string
+    modelo!: Modelo
     cor!: string
-    tipo!: string
+    tipo!: Tipo
     ano!: number
 
     constructor() {

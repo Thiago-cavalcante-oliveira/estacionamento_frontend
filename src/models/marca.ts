@@ -1,7 +1,7 @@
-import {entitty} from "@/models/entitty";
+import {Entitty} from "@/models/entitty";
 
 
-export class Marca extends entitty{
+export class Marca extends Entitty{
     nome!: string
 
     constructor() {

@@ -1,6 +1,6 @@
-import {entitty} from "@/models/entitty";
+import {Entitty} from "@/models/entitty";
 
-export class condutor extends entitty{
+export class Condutor extends Entitty{
     nome!: string
     cpf!:string
     telefone!:string

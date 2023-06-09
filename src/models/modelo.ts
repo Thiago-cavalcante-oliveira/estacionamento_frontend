@@ -1,8 +1,9 @@
-import {entitty} from "@/models/entitty";
+import {Entitty} from "@/models/entitty";
+import {Marca} from "@/models/marca";
 
-export class modelo extends entitty{
+export class Modelo extends Entitty{
     nome!: string
-    marca!: string
+    marca!: Marca
 
     constructor() {
         super();

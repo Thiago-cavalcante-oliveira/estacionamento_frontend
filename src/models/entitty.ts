@@ -1,4 +1,4 @@
-export class entitty {
+export class Entitty {
     id! : number
     cadastro! : Date
     edicao! : Date
