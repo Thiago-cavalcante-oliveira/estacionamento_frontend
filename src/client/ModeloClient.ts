@@ -1,5 +1,6 @@
 import axios, {AxiosInstance} from "axios";
 import {Modelo} from "@/models/Modelo";
+import {Condutor} from "@/models/condutor";
 
 export class ModeloClient {
     private axiosClient: AxiosInstance;
@@ -11,26 +12,28 @@ export class ModeloClient {
         });
     }
 
+
+
     public async findById(id: number): Promise<Modelo> {
 
         try {
-            return (await this.axiosClient.get<Modelo>(`/${id}`)).data
+            return (await this.axiosClient.get(`/${id}`)).data
         } catch (error: any) {
             return Promise.reject(error.response)
         }
     }
-    public async findAll(id: number): Promise<[Modelo]> {
+    public async findAll(id: number): Promise<Modelo[]> {
 
         try {
-            return (await this.axiosClient.get<Modelo>(`/lista`)).data
+            return (await this.axiosClient.get(`/lista`)).data
         } catch (error: any) {
             return Promise.reject(error.response)
         }
     }
 
-    public async atualizar(id: number): Promise<string> {
+    public async atualizar(modelo: Modelo): Promise<string> {
         try {
-            return (await this.axiosClient.put<string>(`/${id}`,Modelo)).data
+            return (await this.axiosClient.put(`/${modelo.id}`,Modelo)).data
 
         } catch (error: any) {
             return Promise.reject(error.response)
@@ -38,15 +41,21 @@ export class ModeloClient {
     }
 
 
-    public async delete(id: number): Promise<string> {
+    public async delete(modelo: Modelo): Promise<string> {
         try {
-            return (await this.axiosClient.delete<string>(`/${id}`)).data
+            return (await this.axiosClient.delete(`/${modelo.id}`)).data
 
         } catch (error: any) {
             return Promise.reject(error.response)
         }
     }
-
+    public async cadastrar(modelo: Modelo): Promise<void>{
+        try{
+            return (await this.axiosClient.post('/', modelo))
+        }catch (error: any){
+            return Promise.reject(error.response)
+        }
+    }
 
 
 }

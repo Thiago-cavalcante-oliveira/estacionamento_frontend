@@ -1,12 +1,13 @@
 import axios, {AxiosInstance} from "axios";
 import {Marca} from "@/models/Marca";
+import {Condutor} from "@/models/condutor";
 
 export class MarcaClient {
     private axiosClient: AxiosInstance;
 
     constructor() {
         this.axiosClient = axios.create({
-            baseURL: 'http://localhost:8080/api/condutor',
+            baseURL: 'http://localhost:8085/api/marca',
             headers: {'Content-Type': 'application/json'}
         });
     }
@@ -14,31 +15,31 @@ export class MarcaClient {
     public async findById(id: number): Promise<Marca> {
 
         try {
-            return (await this.axiosClient.get<Marca>(`/${id}`)).data
+            return (await this.axiosClient.get(`/${id}`)).data
         } catch (error: any) {
             return Promise.reject(error.response)
         }
     }
-    public async findAll(id: number): Promise<[Marca]> {
+    public async findAll(): Promise<Marca[]> {
 
         try {
-            return (await this.axiosClient.get<Marca>(`/lista`)).data
+            return (await this.axiosClient.get(`/lista`)).data
         } catch (error: any) {
             return Promise.reject(error.response)
         }
     }
 
-    public async findAtivo(id: number): Promise<[Marca]> {
+    public async findAtivo(id: number): Promise<Marca> {
 
         try {
-            return (await this.axiosClient.get<Marca>(`/listaAtiva`)).data
+            return (await this.axiosClient.get(`/listaAtiva`)).data
         } catch (error: any) {
             return Promise.reject(error.response)
         }
     }
-    public async atualizar(id: number): Promise<string> {
+    public async atualizar(marca: Marca): Promise<string> {
         try {
-            return (await this.axiosClient.put<string>(`/${id}`,Marca)).data
+            return (await this.axiosClient.put(`/${marca.id}`,marca)).data
 
         } catch (error: any) {
             return Promise.reject(error.response)
@@ -47,13 +48,19 @@ export class MarcaClient {
 
     public async delete(id: number): Promise<string> {
         try {
-            return (await this.axiosClient.delete<string>(`/${id}`)).data
+            return (await this.axiosClient.delete(`/${id}`)).data
 
         } catch (error: any) {
             return Promise.reject(error.response)
         }
     }
-
+    public async cadastrar(marca: Marca): Promise<void>{
+        try{
+            return (await this.axiosClient.post('', marca))
+        }catch (error: any){
+            return Promise.reject(error.response)
+        }
+    }
 
 
 }
