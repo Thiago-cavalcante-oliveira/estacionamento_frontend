@@ -19,6 +19,33 @@ export class CondutorClient {
             return Promise.reject(error.response)
         }
     }
+    public async findAll(id: number): Promise<[Condutor]> {
+
+        try {
+            return (await this.axiosClient.get<Condutor>(`/lista`)).data
+        } catch (error: any) {
+            return Promise.reject(error.response)
+        }
+    }
+
+    public async findAtivo(id: number): Promise<[Condutor]> {
+
+        try {
+            return (await this.axiosClient.get<Condutor>(`/listaativo`)).data
+        } catch (error: any) {
+            return Promise.reject(error.response)
+        }
+    }
+
+    public async atualizar(id: number): Promise<string> {
+        try {
+            return (await this.axiosClient.put<string>(`/${id}`,Condutor)).data
+
+        } catch (error: any) {
+            return Promise.reject(error.response)
+        }
+    }
+
 
     public async delete(id: number): Promise<string> {
         try {
@@ -28,6 +55,7 @@ export class CondutorClient {
             return Promise.reject(error.response)
         }
     }
+
 
 
 }

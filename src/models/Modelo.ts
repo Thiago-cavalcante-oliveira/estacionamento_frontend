@@ -1,5 +1,5 @@
 import {Entitty} from "@/models/entitty";
-import {Marca} from "@/models/marca";
+import {Marca} from "@/models/Marca";
 
 export class Modelo extends Entitty{
     nome!: string

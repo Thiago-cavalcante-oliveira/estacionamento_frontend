@@ -1,6 +1,6 @@
 import {Entitty} from "@/models/entitty";
-import {Tipo} from "@/models/tipo";
-import {Modelo} from "@/models/modelo";
+import {Tipo} from "@/models/Tipo";
+import {Modelo} from "@/models/Modelo";
 
 export class Veiculo extends Entitty{
     placa!: string

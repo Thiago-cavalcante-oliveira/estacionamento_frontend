@@ -1,8 +1,5 @@
 <template>
-  <v-btn
-  color="primary
-"
-  >teste</v-btn>
+
 </template>
 
 <script>
