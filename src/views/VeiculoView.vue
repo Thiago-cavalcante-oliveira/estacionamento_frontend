@@ -1,10 +1,12 @@
 <template>
-
+<tabela-veiculo></tabela-veiculo>
 </template>
 
 <script>
+import TabelaVeiculo from "@/components/TabelaVeiculo";
 export default {
-  name: "VeiculoView"
+  name: "VeiculoView",
+  components: {TabelaVeiculo}
 }
 </script>
 

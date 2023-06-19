@@ -65,10 +65,68 @@
                       md="6"
                     >
                       <v-text-field
-                        v-model="editedItem.nome"
-                        label="Nome da Marca"
+                        v-model="editedItem.placa"
+                        label="Placa do Veículo"
+                        v-mask="'AAA-#A##'"
+
                       ></v-text-field>
                     </v-col>
+
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                    >
+                      <v-select
+                        label="Modelo"
+                        :items="listaModelos"
+                        item-title="nome"
+                        item-value="id"
+                        v-model="editedItem.modelo.id"
+                      >
+
+                      </v-select>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                    >
+                      <v-select
+                        label="Cor"
+                        :items="['BRANCO', 'AZUL', 'PRETO', 'CINZA', 'ROXO', 'LARANJA']"
+                        item-value="item"
+                        v-model="editedItem.cor"
+                      >
+
+                      </v-select>
+                    </v-col>
+                    <v-col
+
+                      cols="12"
+                      sm="6"
+                      md="6">
+                      <v-select
+
+                        label="Tipo"
+                        :items="['MOTO', 'CARRO', 'VAN']"
+                        item-value="item"
+                        v-model="editedItem.tipo"
+                      >
+
+                      </v-select>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                    >
+                      <v-text-field
+                        v-model="editedItem.ano"
+                        label="Ano de fabricação"
+                      ></v-text-field>
+                    </v-col>
+
 
                     <!--                  <v-col-->
                     <!--                    cols="12"-->
@@ -180,8 +238,11 @@
 </template>
 <script lang="ts">
 import {VDataTable} from 'vuetify/labs/VDataTable'
-import {MarcaClient} from "@/client/MarcaClient";
-import {Marca} from "@/models/Marca";
+import {Modelo} from "@/models/Modelo";
+import {ModeloClient} from "@/client/ModeloClient";
+
+import {Veiculo} from "@/models/Veiculo";
+import {VeiculoClient} from "@/client/VeiculoClient";
 
 export default {
   components: {
@@ -193,42 +254,39 @@ export default {
     error: '',
     dialog: false,
     dialogDelete: false,
+    listaModelos: [] as Modelo [],
+
     headers: [
-      {
-        title: 'ID',
-        align: 'center',
-        sortable: true,
-        key: 'id',
-      },
-      {
-        title: 'Marca',
-        align: 'start',
-        sortable: true,
-        key: 'nome',
-      },
-      // { title: 'Calories', key: 'calories' },
-      // { title: 'Fat (g)', key: 'fat' },
-      // { title: 'Carbs (g)', key: 'carbs' },
+      {title: 'ID', align: 'center', sortable: true, key: 'id',},
+      {title: 'Nome', align: 'center', sortable: true, key: 'placa',},
+      {title: 'Marca', align: 'center', sortable: true, key: 'modelo.nome',},
+      {title: 'Cor', key: 'Cor.value'},
+      {title: 'Tipo do Veículo', key: 'tipo'},
+      {title: 'Ano de Fabricação', key: 'ano'},
       // { title: 'Protein (g)', key: 'protein' },
       {title: 'Ações', key: 'actions', sortable: false},
     ],
-    object: [] as Marca[],
+    object: [] as Veiculo[],
     editedIndex: -1,
     editedItem: {
-      nome: '',
-      id: -1,
-      ativo:'',
-      edicao:'',
-      cadastro:''
+      id: '',
+      placa: '',
+      modelo: {id: undefined},
+      cor: '',
+      tipo: '',
+      ano: ''
 
-    } as Marca,
+    } as Veiculo,
     defaultItem: {
       nome: '',
-      id: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      id: undefined,
+      modelo: {id: undefined},
+      cor: '',
+      tipo: '',
+      ano: ''
     },
+
+
   }),
 
   computed: {
@@ -249,57 +307,56 @@ export default {
 
   created() {
     this.initialize()
+    this.listarModelos();
   },
 
   methods: {
 
     resetForm() {
-      this.editedItem.nome = '';
+      this.editedItem.placa = '';
+      this.editedItem.modelo.id = 0;
+      this.editedItem.cor = '';
+      this.editedItem.tipo = '';
+      this.editedItem.ano = 0;
     },
     async initialize() {
-      const getApi: MarcaClient = new MarcaClient();
+      const getApi: VeiculoClient = new VeiculoClient();
       this.object = await getApi.findAll()
+    },
 
-
+    async listarModelos() {
+      const getApiModelo: ModeloClient = new ModeloClient();
+      this.listaModelos = await getApiModelo.findAll()
     },
 
     editItem(item) {
-
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
-      this.text = ""
     },
 
     deleteItem(item) {
-
       this.dialogDelete = true
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
-
-
     },
 
     deleteItemConfirm() {
-
-      const deleteApi: MarcaClient = new MarcaClient();
-
-      deleteApi.delete(this.editedItem.id).then(response => {
-          this.object.splice(this.editedIndex, 1)
+      const deleteApi: VeiculoClient = new VeiculoClient();
+      deleteApi.delete(this.editedItem).then(response => {
+          this.initialize()
           this.text = response
           this.snackbar = true
-
         }
       ).catch((response) => this.error = response.data)
       this.closeDelete()
       this.initialize()
-    }
-    ,
+    },
 
     close() {
       this.dialog = false
       this.$nextTick(() => {
-        this.editedItem = Object.assign({nome: ''} as Marca, this.defaultItem)
+        this.editedItem = Object.assign({placa: ''} as Veiculo, this.defaultItem)
         this.editedIndex = -1
       })
     },
@@ -307,29 +364,24 @@ export default {
     closeDelete() {
       this.dialogDelete = false
       this.$nextTick(() => {
-        this.editedItem = Object.assign({nome: ''} as Marca, this.defaultItem)
+        this.editedItem = Object.assign({placa: ''} as Veiculo, this.defaultItem)
         this.editedIndex = -1
       })
     },
 
     save() {
-      const postApi: MarcaClient = new MarcaClient();
-
-      postApi.cadastrar(this.editedItem).then(() => {
-
+      const postApi: VeiculoClient = new VeiculoClient();
+      postApi.cadastrar(this.editedItem).then(response => {
         if (this.editedIndex > -1) {
-
           Object.assign(this.object[this.editedIndex], this.editedItem)
         } else {
-
           this.object.push(this.editedItem)
         }
-        this.text = 'Cadastrado com Sucesso'
-        this.snackbar = true
+        this.text = response.data
         this.close()
         this.error = ''
-
         this.$nextTick(() => {
+          this.snackbar = true
           this.resetForm()
           this.initialize()
         })
@@ -337,9 +389,8 @@ export default {
       }).catch((response) => {
         this.error = response.data
       })
-
-
     },
   },
 }
 </script>
+
