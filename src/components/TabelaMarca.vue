@@ -216,7 +216,10 @@ export default {
     editedIndex: -1,
     editedItem: {
       nome: '',
-      id: ''
+      id: -1,
+      ativo:'',
+      edicao:'',
+      cadastro:''
 
     } as Marca,
     defaultItem: {
@@ -237,6 +240,7 @@ export default {
   watch: {
     dialog(val) {
       val || this.close()
+      this.text=''
     },
     dialogDelete(val) {
       val || this.closeDelete()
@@ -264,6 +268,7 @@ export default {
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
+      this.text = ""
     },
 
     deleteItem(item) {

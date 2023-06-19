@@ -7,7 +7,7 @@ export class ConfiguracaoClient {
 
     constructor() {
         this.axiosClient = axios.create({
-            baseURL: 'http://localhost:8080/api/condutor',
+            baseURL: 'http://localhost:8080/api/configuracao',
             headers: {'Content-Type': 'application/json'}
         });
     }
@@ -16,6 +16,15 @@ export class ConfiguracaoClient {
 
         try {
             return (await this.axiosClient.get(`/${id}`)).data
+        } catch (error: any) {
+            return Promise.reject(error.response)
+        }
+    }
+
+    public async findAll(): Promise<Configuracao[]> {
+
+        try {
+            return (await this.axiosClient.get(`/lista`)).data
         } catch (error: any) {
             return Promise.reject(error.response)
         }

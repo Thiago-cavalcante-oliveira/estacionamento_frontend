@@ -10,10 +10,28 @@ export class Configuracao extends Entitty{
     vagasMoto!: number
     vagasCarro!: number
     vagasVan!: number
-    versao!: number
+    versao?: number
 
     constructor() {
         super();
     }
+    
+
+};
+
+export interface CreateConfiguracaoDTO {
+
+
+valorHora: number
+    valorMinutoMulta: number
+    inicioExpediente: Date
+    fimExpediente: Date
+    tempoDeCreditoDesconto: number
+    gerarDesconto: boolean
+    vagasMoto: number
+    vagasCarro: number
+    vagasVan: number
+    versao?: number
+
 
 }

@@ -1,8 +1,10 @@
 <template>
   <v-app>
     sdasdasd
-    <v-app-bar>
-      <v-row class="d-flex justify-space-between px-16 ">
+    <v-app-bar height="150" >
+      <v-row class="d-flex justify-space-between px-16  "
+      extension
+      >
         <router-link to="/">
           <v-btn
             variant="tonal"
@@ -21,7 +23,7 @@
             variant="tonal"
             color="indigo"
             size="large"
-            width="150"
+            width="250"
             elevation="2"
           > Marca
           </v-btn>
@@ -31,7 +33,7 @@
             variant="tonal"
             color="indigo"
             size="large"
-            width="150"
+            width="250"
             elevation="2"
           > Modelo
           </v-btn>
@@ -41,7 +43,7 @@
           variant="tonal"
           color="indigo"
           size="large"
-          width="150"
+          width="250"
           elevation="2"
         > Veículo
         </v-btn>
@@ -51,7 +53,7 @@
           variant="tonal"
           color="indigo"
           size="large"
-          width="150"
+          width="250"
           elevation="2"
         > Condutor
         </v-btn>
@@ -61,7 +63,7 @@
           variant="tonal"
           color="indigo"
           size="large"
-          width="150"
+          width="250"
           elevation="2"
         > Configurações
         </v-btn>
