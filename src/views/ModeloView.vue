@@ -1,10 +1,12 @@
 <template>
-modelo
+  <tabela-modelo></tabela-modelo>
 </template>
 
 <script>
+import TabelaModelo from "@/components/TabelaModelo";
 export default {
-  name: "ModeloView"
+  name: "ModeloView",
+  components: {TabelaModelo}
 }
 </script>
 

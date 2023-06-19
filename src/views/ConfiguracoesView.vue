@@ -1,10 +1,12 @@
 <template>
-
+<TabelaConfiguracao></TabelaConfiguracao>
 </template>
 
 <script>
+import TabelaConfiguracao from "@/components/TabelaConfiguracao";
 export default {
-  name: "ConfiguracoesView"
+  name: "ConfiguracoesView",
+  components: {TabelaConfiguracao}
 }
 </script>
 

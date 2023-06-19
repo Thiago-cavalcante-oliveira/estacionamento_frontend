@@ -1,5 +1,5 @@
 import axios, {AxiosInstance} from "axios";
-import {Configuracao} from "@/models/Configuracao";
+import {Configuracao, CreateConfiguracaoDTO} from "@/models/Configuracao";
 import {Condutor} from "@/models/condutor";
 
 export class ConfiguracaoClient {
@@ -7,7 +7,7 @@ export class ConfiguracaoClient {
 
     constructor() {
         this.axiosClient = axios.create({
-            baseURL: 'http://localhost:8080/api/configuracao',
+            baseURL: 'http://localhost:8085/api/configuracao',
             headers: {'Content-Type': 'application/json'}
         });
     }
@@ -47,9 +47,9 @@ export class ConfiguracaoClient {
             return Promise.reject(error.response)
         }
     }
-    public async cadastrar(configuracao: Configuracao): Promise<void>{
+    public async cadastrar(configuracao: CreateConfiguracaoDTO): Promise<void>{
         try{
-            return (await this.axiosClient.post('/', configuracao))
+            return (await this.axiosClient.post('', configuracao))
         }catch (error: any){
             return Promise.reject(error.response)
         }
