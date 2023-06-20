@@ -24,9 +24,10 @@
             <template v-slot:activator="{ props }">
               <v-btn
                 elevation="4"
-                color="primary"
+                color="green"
                 dark
                 class="mb-2"
+                @click=""
                 v-bind="props"
               >
                 Cadastrar
@@ -36,7 +37,6 @@
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
-
               <v-card-text>
                 <v-container>
                   <v-alert
@@ -69,37 +69,6 @@
                         label="Nome da Marca"
                       ></v-text-field>
                     </v-col>
-
-                    <!--                  <v-col-->
-                    <!--                    cols="12"-->
-                    <!--                    sm="6"-->
-                    <!--                    md="4"-->
-                    <!--                  >-->
-                    <!--                    <v-text-field-->
-                    <!--                      v-model="editedItem.fat"-->
-                    <!--                      label="Fat (g)"-->
-                    <!--                    ></v-text-field>-->
-                    <!--                  </v-col>-->
-                    <!--                  <v-col-->
-                    <!--                    cols="12"-->
-                    <!--                    sm="6"-->
-                    <!--                    md="4"-->
-                    <!--                  >-->
-                    <!--                    <v-text-field-->
-                    <!--                      v-model="editedItem.carbs"-->
-                    <!--                      label="Carbs (g)"-->
-                    <!--                    ></v-text-field>-->
-                    <!--                  </v-col>-->
-                    <!--                  <v-col-->
-                    <!--                    cols="12"-->
-                    <!--                    sm="6"-->
-                    <!--                    md="4"-->
-                    <!--                  >-->
-                    <!--                    <v-text-field-->
-                    <!--                      v-model="editedItem.protein"-->
-                    <!--                      label="Protein (g)"-->
-                    <!--                    ></v-text-field>-->
-                    <!--                  </v-col>-->
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -116,7 +85,7 @@
                 <v-btn
                   color="blue-darken-1"
                   variant="text"
-                  @click="save"
+                  @click="acaoSalvar"
                 >
                   Salvar
                 </v-btn>
@@ -155,26 +124,20 @@
       </template>
       <template v-slot:no-data>
         <v-btn
-
           color="primary"
           @click="initialize"
         >
           Reset
         </v-btn>
-
       </template>
-
     </v-data-table>
     <v-snackbar
       location="bottom"
-      class="align-content-center"
+      class="d-flex justify-center"
       color="green"
       v-model="snackbar"
       :timeout="2000"
-    >
-      {{ text }}
-
-
+    > {{ text }}
     </v-snackbar>
   </v-container>
 </template>
@@ -194,22 +157,8 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      {
-        title: 'ID',
-        align: 'center',
-        sortable: true,
-        key: 'id',
-      },
-      {
-        title: 'Marca',
-        align: 'start',
-        sortable: true,
-        key: 'nome',
-      },
-      // { title: 'Calories', key: 'calories' },
-      // { title: 'Fat (g)', key: 'fat' },
-      // { title: 'Carbs (g)', key: 'carbs' },
-      // { title: 'Protein (g)', key: 'protein' },
+      {title: 'ID', align: 'center', sortable: true, key: 'id'},
+      {title: 'Marca', align: 'start', sortable: true, key: 'nome'},
       {title: 'Ações', key: 'actions', sortable: false},
     ],
     object: [] as Marca[],
@@ -217,17 +166,10 @@ export default {
     editedItem: {
       nome: '',
       id: -1,
-      ativo:'',
-      edicao:'',
-      cadastro:''
-
     } as Marca,
     defaultItem: {
       nome: '',
       id: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
     },
   }),
 
@@ -235,13 +177,15 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Novo item' : 'Editar item'
     },
+
   },
 
   watch: {
+
     dialog(val) {
       val || this.close()
-
     },
+
     dialogDelete(val) {
       val || this.closeDelete()
     },
@@ -252,6 +196,13 @@ export default {
   },
 
   methods: {
+    acaoSalvar() {
+      if (this.editedIndex === -1) {
+        return this.save()
+      }
+      return this.atualizar()
+
+    },
 
     resetForm() {
       this.editedItem.nome = '';
@@ -259,12 +210,9 @@ export default {
     async initialize() {
       const getApi: MarcaClient = new MarcaClient();
       this.object = await getApi.findAll()
-
-
     },
 
     editItem(item) {
-
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
@@ -272,29 +220,22 @@ export default {
     },
 
     deleteItem(item) {
-
       this.dialogDelete = true
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
-
-
     },
 
     deleteItemConfirm() {
-
       const deleteApi: MarcaClient = new MarcaClient();
-
       deleteApi.delete(this.editedItem.id).then(response => {
           this.object.splice(this.editedIndex, 1)
           this.text = response
           this.snackbar = true
-
         }
       ).catch((response) => this.error = response.data)
       this.closeDelete()
       this.initialize()
-    }
-    ,
+    },
 
     close() {
       this.dialog = false
@@ -314,32 +255,46 @@ export default {
 
     save() {
       const postApi: MarcaClient = new MarcaClient();
-
       postApi.cadastrar(this.editedItem).then(() => {
-
         if (this.editedIndex > -1) {
-
           Object.assign(this.object[this.editedIndex], this.editedItem)
         } else {
-
           this.object.push(this.editedItem)
         }
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
         this.close()
         this.error = ''
-
         this.$nextTick(() => {
           this.resetForm()
           this.initialize()
         })
-
       }).catch((response) => {
         this.error = response.data
       })
-
-
     },
+
+    atualizar() {
+      const postApi: MarcaClient = new MarcaClient();
+      postApi.atualizar(this.editedItem).then(() => {
+        if (this.editedIndex > -1) {
+          Object.assign(this.object[this.editedIndex], this.editedItem)
+        } else {
+          this.object.push(this.editedItem)
+        }
+        this.text = 'Cadastrado com Sucesso'
+        this.snackbar = true
+        this.close()
+        this.error = ''
+        this.$nextTick(() => {
+          this.resetForm()
+          this.initialize()
+        })
+      }).catch((response) => {
+        this.error = response.data
+      })
+    },
+
   },
 }
 </script>

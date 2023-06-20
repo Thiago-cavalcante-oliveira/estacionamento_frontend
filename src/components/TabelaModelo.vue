@@ -77,45 +77,11 @@
                         item-value="id"
                         v-model="editedItem.marca.id"
                       >
-
                       </v-select>
                     </v-col>
-
-
-                    <!--                  <v-col-->
-                    <!--                    cols="12"-->
-                    <!--                    sm="6"-->
-                    <!--                    md="4"-->
-                    <!--                  >-->
-                    <!--                    <v-text-field-->
-                    <!--                      v-model="editedItem.fat"-->
-                    <!--                      label="Fat (g)"-->
-                    <!--                    ></v-text-field>-->
-                    <!--                  </v-col>-->
-                    <!--                  <v-col-->
-                    <!--                    cols="12"-->
-                    <!--                    sm="6"-->
-                    <!--                    md="4"-->
-                    <!--                  >-->
-                    <!--                    <v-text-field-->
-                    <!--                      v-model="editedItem.carbs"-->
-                    <!--                      label="Carbs (g)"-->
-                    <!--                    ></v-text-field>-->
-                    <!--                  </v-col>-->
-                    <!--                  <v-col-->
-                    <!--                    cols="12"-->
-                    <!--                    sm="6"-->
-                    <!--                    md="4"-->
-                    <!--                  >-->
-                    <!--                    <v-text-field-->
-                    <!--                      v-model="editedItem.protein"-->
-                    <!--                      label="Protein (g)"-->
-                    <!--                    ></v-text-field>-->
-                    <!--                  </v-col>-->
                   </v-row>
                 </v-container>
               </v-card-text>
-
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -173,9 +139,7 @@
         >
           Reset
         </v-btn>
-
       </template>
-
     </v-data-table>
     <v-snackbar
       location="bottom"
@@ -210,29 +174,10 @@ export default {
     listaMarcas: [] as Marca [],
 
     headers: [
-      {
-        title: 'ID',
-        align: 'center',
-        sortable: true,
-        key: 'id',
-      },
-      {
-        title: 'Nome',
-        align: 'center',
-        sortable: true,
-        key: 'nome',
-      },
-      {
-        title: 'Marca',
-        align: 'center',
-        sortable: true,
-        key: 'marca.nome',
-      },
-      // { title: 'Calories', key: 'calories' },
-      // { title: 'Fat (g)', key: 'fat' },
-      // { title: 'Carbs (g)', key: 'carbs' },
-      // { title: 'Protein (g)', key: 'protein' },
-      {title: 'Ações', key: 'actions', sortable: false},
+      {title: 'ID', align: 'center', sortable: true, key: 'id'},
+      {title: 'Nome', align: 'center', sortable: true, key: 'nome'},
+      {title: 'Marca', align: 'center', sortable: true, key: 'marca.nome'},
+      {title: 'Ações', key: 'actions', sortable: false}
     ],
     object: [] as Modelo[],
     editedIndex: -1,
@@ -240,8 +185,6 @@ export default {
       id: '',
       nome: '',
       marca: {id: undefined},
-
-
     } as Modelo,
     defaultItem: {
       nome: '',

@@ -1,7 +1,8 @@
 <template>
-  <HelloWorld />
+  <tabela-estacionar></tabela-estacionar>
 </template>
 
 <script lang="ts" setup>
-  import HelloWorld from '@/components/TabelaMarca.vue'
+
+  import TabelaEstacionar from "@/components/TabelaEstacionar.vue";
 </script>

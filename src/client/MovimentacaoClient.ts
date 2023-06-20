@@ -8,7 +8,7 @@ export class MovimentacaoClient {
 
     constructor() {
         this.axiosClient = axios.create({
-            baseURL: 'http://localhost:8080/api/condutor',
+            baseURL: 'http://localhost:8085/api/movimentacao',
             headers: {'Content-Type': 'application/json'}
         });
     }
@@ -21,7 +21,7 @@ export class MovimentacaoClient {
             return Promise.reject(error.response)
         }
     }
-    public async findAll(id: number): Promise<Movimentacao[]> {
+    public async findAll(): Promise<Movimentacao[]> {
 
         try {
             return (await this.axiosClient.get(`/lista`)).data
@@ -39,6 +39,15 @@ export class MovimentacaoClient {
         }
     }
 
+  public async finalizar(movimentacao: Movimentacao): Promise<string> {
+    try {
+      return (await this.axiosClient.patch(`/${movimentacao.id}` , movimentacao)).data
+
+    } catch (error: any) {
+      return Promise.reject(error.response)
+    }
+  }
+
 
     public async delete(movimentacao: Movimentacao): Promise<string> {
         try {
@@ -51,7 +60,7 @@ export class MovimentacaoClient {
 
     public async cadastrar(movimentacao: Movimentacao): Promise<void>{
         try{
-            return (await this.axiosClient.post('/', movimentacao))
+            return (await this.axiosClient.post('', movimentacao))
         }catch (error: any){
             return Promise.reject(error.response)
         }

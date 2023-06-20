@@ -30,9 +30,9 @@ export class ConfiguracaoClient {
         }
     }
 
-    public async atualizar(configuracao: Configuracao): Promise<string> {
+    public async atualizar(configuracao: CreateConfiguracaoDTO): Promise<string> {
         try {
-            return (await this.axiosClient.put(`/${configuracao.id}`,Configuracao)).data
+            return (await this.axiosClient.put(`/${configuracao.id}`,configuracao)).data
 
         } catch (error: any) {
             return Promise.reject(error.response)

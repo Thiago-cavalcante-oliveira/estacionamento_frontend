@@ -21,7 +21,7 @@ export class Configuracao extends Entitty{
 
 export interface CreateConfiguracaoDTO {
 
-
+id?:number
 valorHora: number
     valorMinutoMulta: number
     inicioExpediente: Date

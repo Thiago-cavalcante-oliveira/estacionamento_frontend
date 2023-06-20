@@ -6,7 +6,7 @@ export class CondutorClient {
 
     constructor() {
         this.axiosClient = axios.create({
-            baseURL: 'http://localhost:8080/api/condutor',
+            baseURL: 'http://localhost:8085/api/condutor',
             headers: {'Content-Type': 'application/json'}
         });
     }
@@ -21,7 +21,7 @@ export class CondutorClient {
         }
     }
 
-    public async findAll(id: number): Promise<Condutor[]> {
+    public async findAll(): Promise<Condutor[]> {
 
         try {
             return (await this.axiosClient.get(`/lista`)).data
@@ -39,9 +39,9 @@ export class CondutorClient {
         }
     }
 
-    public async atualizar(id: number): Promise<string> {
+    public async atualizar(condutor: Condutor): Promise<string> {
         try {
-            return (await this.axiosClient.put(`/${id}`,Condutor)).data
+            return (await this.axiosClient.put(`/${condutor.id}`,Condutor)).data
 
         } catch (error: any) {
             return Promise.reject(error.response)
@@ -49,9 +49,9 @@ export class CondutorClient {
     }
 
 
-    public async delete(id: number): Promise<string> {
+    public async delete(condutor: Condutor): Promise<string> {
         try {
-            return (await this.axiosClient.delete(`/$`)).data
+            return (await this.axiosClient.delete(`/${condutor.id}`)).data
 
         } catch (error: any) {
             return Promise.reject(error.response)
@@ -60,7 +60,7 @@ export class CondutorClient {
 
     public async cadastrar(condutor: Condutor): Promise<void>{
         try{
-            return (await this.axiosClient.post('/', condutor))
+            return (await this.axiosClient.post('', condutor))
         }catch (error: any){
             return Promise.reject(error.response)
         }

@@ -29,46 +29,20 @@
                       <v-text-field disabled v-model="editedItem.id" label="ID"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="4" md="4">
-                      <v-text-field v-mask="'##:##'" v-model="editedItem.inicioExpediente"
-                                    label="Horário de abertura"></v-text-field>
+                      <v-text-field v-model="editedItem.nome"
+                                    label="Nome"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="4" md="4">
-                      <v-text-field v-mask="'##:##'" v-model="editedItem.fimExpediente"
-                                    label="Horário de encerramento"></v-text-field>
+                      <v-text-field v-model="editedItem.cpf"
+                                    v-mask="'###.###.###-##'"
+                                    label="CPF"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="4" md="4">
-                      <v-text-field v-model="editedItem.valorHora" label="Valor da hora"></v-text-field>
+                      <v-text-field v-model="editedItem.telefone" label="Telefone"
+                                    v-mask="'(##) #####-####'"
+                      ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="4" md="4">
-                      <v-text-field v-model="editedItem.valorMinutoMulta"
-                                    label="Valor do minuto de multa"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="4" md="4">
-                      <v-text-field v-model="editedItem.tempoParaGerarDesconto"
-                                    label="Tempo acumulado para gerar desconto"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="4" md="4">
-                      <v-text-field v-model="editedItem.tempoDeCreditoDesconto"
-                                    suffix=" horas"
-                                    label="Crédito a ser usado"></v-text-field>
-                    </v-col>
-                    <v-select
-                      label="Gerar desconto?"
-                      :items="[{title:'SIM', value: true},{title: 'NÃO', value: false } ]"
 
-
-                      v-model="editedItem.gerarDesconto"
-                      variant="solo"
-                    ></v-select>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-text-field v-model="editedItem.vagasCarro" label="Vagas para Carro"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-text-field v-model="editedItem.vagasMoto" label="Vagas para Moto"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-text-field v-model="editedItem.vagasVan" label="Vagas para Van"></v-text-field>
-                    </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -123,9 +97,9 @@
 <script lang="ts">
 import {VDataTable} from 'vuetify/labs/VDataTable'
 
-import {CreateConfiguracaoDTO} from '@/models/Configuracao';
-import {Configuracao} from '@/models/Configuracao';
-import {ConfiguracaoClient} from '@/client/ConfiguracaoClient';
+
+import {Condutor} from "@/models/condutor";
+import {CondutorClient} from "@/client/CondutorClient";
 
 export default {
   components: {
@@ -139,48 +113,28 @@ export default {
     dialogDelete: false,
     headers: [
       {title: 'ID', align: 'center', sortable: true, key: 'id'},
-      {title: 'Hora de Abertura', key: 'inicioExpediente', align: 'center', sortable: true},
-      {title: 'Hora fechamento', key: 'fimExpediente', align: 'center', sortable: true},
-      {title: 'Valor da Hora', key: 'valorHora', align: 'center', sortable: true},
-      {title: 'Valor do Minuto da Multa', key: 'valorMinutoMulta', align: 'center', sortable: true},
-      {title: 'Tempo para obter crédito', key: 'tempoParaGerarDesconto', align: 'center', sortable: true},
-      {title: 'Tempo para crédito', key: 'tempoDeCreditoDesconto', align: 'center', sortable: true},
-      //{title: 'Gerar desconto', key: 'gerarDesconto', align: 'center', sortable: true},
-      {title: 'Total de Vagas para moto', key: 'vagasMoto', align: 'center', sortable: true},
-      {title: 'Total de Vagas para carro', key: 'vagasVan', align: 'center', sortable: true},
-      {title: 'Total de Vagas para Van', key: 'vagasCarro', align: 'center', sortable: true},
+      {title: 'Nome do Consutor', key: 'nome', align: 'center', sortable: true},
+      {title: 'CPF', key: 'cpf', align: 'center', sortable: true},
+      {title: 'Telefone', key: 'telefone', align: 'center', sortable: true},
       {title: 'Ações', key: 'actions', sortable: false},
     ],
-    object: [] as Configuracao[],
+    object: [] as Condutor[],
     editedIndex: -1,
     editedItem: {
       id: '',
-      inicioExpediente: '',
-      valorHora: '',
-      valorMinutoMulta: '',
-      fimExpediente: '',
-      tempoParaGerarDesconto: '',
-      tempoDeCreditoDesconto: '',
-      gerarDesconto: '',
-      vagasMoto: '',
-      vagasVan: '',
-      vagasCarro: '',
-      versao: '',
-    } as CreateConfiguracaoDTO,
+      nome: '',
+      cpf: '',
+      telefone: ''
+
+    } as Condutor,
 
     defaultItem: {
-      id: -1,
-      inicioExpediente: '',
-      valorHora: 0,
-      valorMinutoMulta: 0,
-      fimExpedientero: '',
-      tempoParaGerarDesconto: 0,
-      tempoDeCreditoDesconto: 0,
-      gerarDesconto: true,
-      vagasMoto: 0,
-      vagasVan: 0,
-      versao: 0
-    } as CreateConfiguracaoDTO,
+      id: undefined,
+      nome: '',
+      cpf: '',
+      telefone: '',
+
+    } as Condutor,
   }),
 
   computed: {
@@ -217,7 +171,7 @@ export default {
     },
 
     async initialize() {
-      const getApi: ConfiguracaoClient = new ConfiguracaoClient();
+      const getApi: CondutorClient = new CondutorClient();
       this.object = await getApi.findAll()
 
 
@@ -242,7 +196,7 @@ export default {
 
     deleteItemConfirm() {
 
-      const deleteApi: ConfiguracaoClient = new ConfiguracaoClient();
+      const deleteApi: CondutorClient = new CondutorClient();
 
       deleteApi.delete(this.editedItem).then(response => {
           this.object.splice(this.editedIndex, 1)
@@ -258,7 +212,7 @@ export default {
     close() {
       this.dialog = false
       this.$nextTick(() => {
-        this.editedItem = Object.assign({} as CreateConfiguracaoDTO, this.defaultItem)
+        this.editedItem = Object.assign({} as Condutor, this.defaultItem)
         this.editedIndex = -1
       })
     },
@@ -266,13 +220,13 @@ export default {
     closeDelete() {
       this.dialogDelete = false
       this.$nextTick(() => {
-        this.editedItem = Object.assign({} as CreateConfiguracaoDTO, this.defaultItem)
+        this.editedItem = Object.assign({} as Condutor, this.defaultItem)
         this.editedIndex = -1
       })
     },
 
     atualizar() {
-      const postApi: ConfiguracaoClient = new ConfiguracaoClient();
+      const postApi: CondutorClient = new CondutorClient();
 
       postApi.atualizar(this.editedItem).then(() => {
 
@@ -301,7 +255,7 @@ export default {
     },
 
     save() {
-      const postApi: ConfiguracaoClient = new ConfiguracaoClient();
+      const postApi: CondutorClient = new CondutorClient();
 
       postApi.cadastrar(this.editedItem).then(() => {
 

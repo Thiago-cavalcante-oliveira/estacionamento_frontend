@@ -35,7 +35,7 @@ const routes = [
         path: 'condutor',
         name: 'condutor',
 
-        component: () => import(/* webpackChunkName: "marca" */ '@/views/CondutorView'),
+        component: () => import(/* webpackChunkName: "condutor" */ '@/views/CondutorView'),
       },
       {
         path: 'configuracoes',
