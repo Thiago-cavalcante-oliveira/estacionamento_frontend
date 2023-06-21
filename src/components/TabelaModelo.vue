@@ -3,14 +3,13 @@
     <v-data-table
       :headers="headers"
       :items="object"
-      :sort-by="[{ key: 'calories', order: 'asc' }]"
       class="elevation-1"
     >
       <template v-slot:top>
         <v-toolbar
           flat
         >
-          <v-toolbar-title>Marca</v-toolbar-title>
+          <v-toolbar-title>Lista de Modelos</v-toolbar-title>
           <v-divider
             class="mx-4"
             inset
@@ -36,7 +35,6 @@
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
-
               <v-card-text>
                 <v-container>
                   <v-alert
@@ -133,7 +131,6 @@
       </template>
       <template v-slot:no-data>
         <v-btn
-
           color="primary"
           @click="initialize"
         >
@@ -149,8 +146,6 @@
       :timeout="2000"
     >
       {{ text }}
-
-
     </v-snackbar>
   </v-container>
 </template>
@@ -202,8 +197,8 @@ export default {
   watch: {
     dialog(val) {
       val || this.close()
-
     },
+
     dialogDelete(val) {
       val || this.closeDelete()
     },
@@ -221,6 +216,7 @@ export default {
       this.editedItem.marca.id = 0,
         this.editedItem.id = 0
     },
+
     async initialize() {
       const getApi: ModeloClient = new ModeloClient();
       this.object = await getApi.findAll()

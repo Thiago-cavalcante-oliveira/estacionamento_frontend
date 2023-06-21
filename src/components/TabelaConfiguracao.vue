@@ -2,11 +2,10 @@
   <v-container fluid>
     <v-data-table :headers="headers"
                   :items="object"
-                  :sort-by="[{ key: 'id', order: 'asc' }]"
                   class="elevation-2 ">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Marca</v-toolbar-title>
+          <v-toolbar-title>Configurações</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="1000px">
@@ -19,7 +18,6 @@
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
-
               <v-card-text>
                 <v-container>
                   <v-alert class="my-6" v-if="error.length > 0" density="compact" type="error"
@@ -55,8 +53,6 @@
                     <v-select
                       label="Gerar desconto?"
                       :items="[{title:'SIM', value: true},{title: 'NÃO', value: false } ]"
-
-
                       v-model="editedItem.gerarDesconto"
                       variant="solo"
                     ></v-select>
@@ -72,7 +68,6 @@
                   </v-row>
                 </v-container>
               </v-card-text>
-
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue-darken-1" variant="text" @click="close">
@@ -109,20 +104,15 @@
         <v-btn color="primary" @click="initialize">
           Reset
         </v-btn>
-
       </template>
-
     </v-data-table>
     <v-snackbar location="bottom" class="align-content-center" color="green" v-model="snackbar" :timeout="2000">
       {{ text }}
-
-
     </v-snackbar>
   </v-container>
 </template>
 <script lang="ts">
 import {VDataTable} from 'vuetify/labs/VDataTable'
-
 import {CreateConfiguracaoDTO} from '@/models/Configuracao';
 import {Configuracao} from '@/models/Configuracao';
 import {ConfiguracaoClient} from '@/client/ConfiguracaoClient';
@@ -131,6 +121,7 @@ export default {
   components: {
     VDataTable
   },
+
   data: () => ({
     text: '',
     snackbar: false,
@@ -146,13 +137,15 @@ export default {
       {title: 'Tempo para obter crédito', key: 'tempoParaGerarDesconto', align: 'center', sortable: true},
       {title: 'Tempo para crédito', key: 'tempoDeCreditoDesconto', align: 'center', sortable: true},
       //{title: 'Gerar desconto', key: 'gerarDesconto', align: 'center', sortable: true},
-      {title: 'Total de Vagas para moto', key: 'vagasMoto', align: 'center', sortable: true},
-      {title: 'Total de Vagas para carro', key: 'vagasVan', align: 'center', sortable: true},
-      {title: 'Total de Vagas para Van', key: 'vagasCarro', align: 'center', sortable: true},
+      {title: 'Vagas para moto', key: 'vagasMoto', align: 'center', sortable: true},
+      {title: 'Vagas para carro', key: 'vagasVan', align: 'center', sortable: true},
+      {title: 'Vagas para Van', key: 'vagasCarro', align: 'center', sortable: true},
       {title: 'Ações', key: 'actions', sortable: false},
     ],
     object: [] as Configuracao[],
+
     editedIndex: -1,
+
     editedItem: {
       id: '',
       inicioExpediente: '',
@@ -192,8 +185,8 @@ export default {
   watch: {
     dialog(val) {
       val || this.close()
-
     },
+
     dialogDelete(val) {
       val || this.closeDelete()
     },
@@ -209,7 +202,6 @@ export default {
         return this.save()
       }
       return this.atualizar()
-
     },
 
     resetForm() {
@@ -219,12 +211,9 @@ export default {
     async initialize() {
       const getApi: ConfiguracaoClient = new ConfiguracaoClient();
       this.object = await getApi.findAll()
-
-
     },
 
     editItem(item: any) {
-
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
@@ -232,23 +221,17 @@ export default {
     },
 
     deleteItem(item: any) {
-
       this.dialogDelete = true
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
-
-
     },
 
     deleteItemConfirm() {
-
       const deleteApi: ConfiguracaoClient = new ConfiguracaoClient();
-
       deleteApi.delete(this.editedItem).then(response => {
           this.object.splice(this.editedIndex, 1)
           this.text = response
           this.snackbar = true
-
         }
       ).catch((response) => this.error = response.data)
       this.closeDelete()
@@ -273,60 +256,44 @@ export default {
 
     atualizar() {
       const postApi: ConfiguracaoClient = new ConfiguracaoClient();
-
       postApi.atualizar(this.editedItem).then(() => {
-
         if (this.editedIndex > -1) {
-
           Object.assign(this.object[this.editedIndex], this.editedItem)
         } else {
-
           this.object.push(this.editedItem)
         }
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
         this.close()
         this.error = ''
-
         this.$nextTick(() => {
           this.resetForm()
           this.initialize()
         })
-
       }).catch((response) => {
         this.error = response.data
       })
-
-
     },
 
     save() {
       const postApi: ConfiguracaoClient = new ConfiguracaoClient();
-
       postApi.cadastrar(this.editedItem).then(() => {
-
         if (this.editedIndex > -1) {
-
           Object.assign(this.object[this.editedIndex], this.editedItem)
         } else {
-
           this.object.push(this.editedItem)
         }
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
         this.close()
         this.error = ''
-
         this.$nextTick(() => {
           this.resetForm()
           this.initialize()
         })
-
       }).catch((response) => {
         this.error = response.data
       })
-
-
     },
   },
 }

@@ -10,7 +10,7 @@
         <v-toolbar
           flat
         >
-          <v-toolbar-title>Marca</v-toolbar-title>
+          <v-toolbar-title>Estacionar Veículo</v-toolbar-title>
           <v-divider
             class="mx-4"
             inset
@@ -235,7 +235,6 @@ export default {
       veiculo: {id: undefined},
       entrada: '',
       saida: ''
-
 
     } as Movimentacao,
     defaultItem: {

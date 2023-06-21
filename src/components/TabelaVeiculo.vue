@@ -3,14 +3,13 @@
     <v-data-table
       :headers="headers"
       :items="object"
-      :sort-by="[{ key: 'calories', order: 'asc' }]"
       class="elevation-1"
     >
       <template v-slot:top>
         <v-toolbar
           flat
         >
-          <v-toolbar-title>Marca</v-toolbar-title>
+          <v-toolbar-title>Lista de Veículos</v-toolbar-title>
           <v-divider
             class="mx-4"
             inset
@@ -36,7 +35,6 @@
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
-
               <v-card-text>
                 <v-container>
                   <v-alert
@@ -71,7 +69,6 @@
 
                       ></v-text-field>
                     </v-col>
-
                     <v-col
                       cols="12"
                       sm="6"
@@ -84,7 +81,6 @@
                         item-value="id"
                         v-model="editedItem.modelo.id"
                       >
-
                       </v-select>
                     </v-col>
                     <v-col
@@ -98,22 +94,18 @@
                         item-value="item"
                         v-model="editedItem.cor"
                       >
-
                       </v-select>
                     </v-col>
                     <v-col
-
                       cols="12"
                       sm="6"
                       md="6">
                       <v-select
-
                         label="Tipo"
                         :items="['MOTO', 'CARRO', 'VAN']"
                         item-value="item"
                         v-model="editedItem.tipo"
                       >
-
                       </v-select>
                     </v-col>
                     <v-col
@@ -126,11 +118,9 @@
                         label="Ano de fabricação"
                       ></v-text-field>
                     </v-col>
-
                   </v-row>
                 </v-container>
               </v-card-text>
-
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -182,15 +172,12 @@
       </template>
       <template v-slot:no-data>
         <v-btn
-
           color="primary"
           @click="initialize"
         >
           Reset
         </v-btn>
-
       </template>
-
     </v-data-table>
     <v-snackbar
       location="bottom"
@@ -200,8 +187,6 @@
       :timeout="2000"
     >
       {{ text }}
-
-
     </v-snackbar>
   </v-container>
 </template>
@@ -244,8 +229,8 @@ export default {
       cor: '',
       tipo: '',
       ano: ''
-
     } as Veiculo,
+
     defaultItem: {
       nome: '',
       id: undefined,
@@ -254,8 +239,6 @@ export default {
       tipo: '',
       ano: ''
     },
-
-
   }),
 
   computed: {
@@ -267,7 +250,6 @@ export default {
   watch: {
     dialog(val) {
       val || this.close()
-
     },
     dialogDelete(val) {
       val || this.closeDelete()

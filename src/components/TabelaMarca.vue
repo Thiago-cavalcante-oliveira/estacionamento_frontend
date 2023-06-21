@@ -3,14 +3,13 @@
     <v-data-table
       :headers="headers"
       :items="object"
-      :sort-by="[{ key: 'calories', order: 'asc' }]"
       class="elevation-1"
     >
       <template v-slot:top>
         <v-toolbar
           flat
         >
-          <v-toolbar-title>Marca</v-toolbar-title>
+          <v-toolbar-title>Lista de Marcas</v-toolbar-title>
           <v-divider
             class="mx-4"
             inset

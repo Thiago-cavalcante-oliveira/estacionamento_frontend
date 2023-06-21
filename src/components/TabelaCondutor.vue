@@ -2,11 +2,10 @@
   <v-container fluid>
     <v-data-table :headers="headers"
                   :items="object"
-                  :sort-by="[{ key: 'id', order: 'asc' }]"
                   class="elevation-2 ">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Marca</v-toolbar-title>
+          <v-toolbar-title>Lista de Condutores</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="1000px">
@@ -19,7 +18,6 @@
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
-
               <v-card-text>
                 <v-container>
                   <v-alert class="my-6" v-if="error.length > 0" density="compact" type="error"
@@ -42,11 +40,9 @@
                                     v-mask="'(##) #####-####'"
                       ></v-text-field>
                     </v-col>
-
                   </v-row>
                 </v-container>
               </v-card-text>
-
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue-darken-1" variant="text" @click="close">
@@ -83,14 +79,10 @@
         <v-btn color="primary" @click="initialize">
           Reset
         </v-btn>
-
       </template>
-
     </v-data-table>
     <v-snackbar location="bottom" class="align-content-center" color="green" v-model="snackbar" :timeout="2000">
       {{ text }}
-
-
     </v-snackbar>
   </v-container>
 </template>
@@ -163,7 +155,6 @@ export default {
         return this.save()
       }
       return this.atualizar()
-
     },
 
     resetForm() {
@@ -173,12 +164,9 @@ export default {
     async initialize() {
       const getApi: CondutorClient = new CondutorClient();
       this.object = await getApi.findAll()
-
-
     },
 
     editItem(item: any) {
-
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
@@ -186,23 +174,17 @@ export default {
     },
 
     deleteItem(item: any) {
-
       this.dialogDelete = true
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
-
-
     },
 
     deleteItemConfirm() {
-
       const deleteApi: CondutorClient = new CondutorClient();
-
       deleteApi.delete(this.editedItem).then(response => {
           this.object.splice(this.editedIndex, 1)
           this.text = response
           this.snackbar = true
-
         }
       ).catch((response) => this.error = response.data)
       this.closeDelete()
@@ -227,60 +209,44 @@ export default {
 
     atualizar() {
       const postApi: CondutorClient = new CondutorClient();
-
       postApi.atualizar(this.editedItem).then(() => {
-
         if (this.editedIndex > -1) {
-
           Object.assign(this.object[this.editedIndex], this.editedItem)
         } else {
-
           this.object.push(this.editedItem)
         }
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
         this.close()
         this.error = ''
-
         this.$nextTick(() => {
           this.resetForm()
           this.initialize()
         })
-
       }).catch((response) => {
         this.error = response.data
       })
-
-
     },
 
     save() {
       const postApi: CondutorClient = new CondutorClient();
-
       postApi.cadastrar(this.editedItem).then(() => {
-
         if (this.editedIndex > -1) {
-
           Object.assign(this.object[this.editedIndex], this.editedItem)
         } else {
-
           this.object.push(this.editedItem)
         }
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
         this.close()
         this.error = ''
-
         this.$nextTick(() => {
           this.resetForm()
           this.initialize()
         })
-
       }).catch((response) => {
         this.error = response.data
       })
-
-
     },
   },
 }
