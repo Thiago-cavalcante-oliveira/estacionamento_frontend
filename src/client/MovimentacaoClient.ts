@@ -1,5 +1,5 @@
 import axios, {AxiosInstance} from "axios";
-import {Movimentacao} from "@/models/Movimentacao";
+import {Movimentacao, MovimentacaoCreateDto} from "@/models/Movimentacao";
 import {Condutor} from "@/models/condutor";
 
 
@@ -30,7 +30,7 @@ export class MovimentacaoClient {
         }
     }
 
-    public async atualizar(movimentacao: Movimentacao): Promise<string> {
+    public async atualizar(movimentacao: MovimentacaoCreateDto): Promise<string> {
         try {
             return (await this.axiosClient.put(`/${movimentacao.id}` , movimentacao)).data
 
@@ -39,7 +39,7 @@ export class MovimentacaoClient {
         }
     }
 
-  public async finalizar(movimentacao: Movimentacao): Promise<string> {
+  public async finalizar(movimentacao: MovimentacaoCreateDto): Promise<string> {
     try {
       return (await this.axiosClient.patch(`/${movimentacao.id}` , movimentacao)).data
 
@@ -49,7 +49,7 @@ export class MovimentacaoClient {
   }
 
 
-    public async delete(movimentacao: Movimentacao): Promise<string> {
+    public async delete(movimentacao: MovimentacaoCreateDto): Promise<string> {
         try {
             return (await this.axiosClient.delete(`/${movimentacao.id}`)).data
 
@@ -58,7 +58,7 @@ export class MovimentacaoClient {
         }
     }
 
-    public async cadastrar(movimentacao: Movimentacao): Promise<void>{
+    public async cadastrar(movimentacao: MovimentacaoCreateDto): Promise<void>{
         try{
             return (await this.axiosClient.post('', movimentacao))
         }catch (error: any){

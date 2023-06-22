@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    sdasdasd
+
     <v-app-bar height="150" >
       <v-row class="d-flex justify-space-between px-16  "
       extension
@@ -18,7 +18,6 @@
           </v-btn>
         </router-link>
         <router-link to="/marca">
-
           <v-btn
             variant="tonal"
             color="indigo"
