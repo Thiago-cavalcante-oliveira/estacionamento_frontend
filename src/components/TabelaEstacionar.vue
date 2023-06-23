@@ -313,9 +313,10 @@ export default {
     },
 
     finalizarItem(item) {
-      this.finalizar();
+      
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
+      this.finalizar();
     },
 
     deleteItemConfirm() {
