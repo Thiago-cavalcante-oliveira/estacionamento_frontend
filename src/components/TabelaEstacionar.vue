@@ -3,7 +3,7 @@
     <v-data-table
       :headers="headers"
       :items="object"
-      :sort-by="[{ key: 'calories', order: 'asc' }]"
+      :sort-by="[{ key: 'ID', order: 'asc' }]"
       class="elevation-1"
     >
       <template v-slot:top>
@@ -197,7 +197,7 @@ import {Marca} from "@/models/Marca";
 import {MarcaClient} from "@/client/MarcaClient";
 import {Veiculo} from "@/models/Veiculo";
 import {Condutor} from "@/models/condutor";
-import {Movimentacao} from "@/models/Movimentacao";
+import {Movimentacao, MovimentacaoCreateDto} from "@/models/Movimentacao";
 import {CondutorClient} from "@/client/CondutorClient";
 import {VeiculoClient} from "@/client/VeiculoClient";
 import {MovimentacaoClient} from "@/client/MovimentacaoClient";
@@ -236,7 +236,7 @@ export default {
       entrada: '',
       saida: ''
 
-    } as Movimentacao,
+    } as MovimentacaoCreateDto,
     defaultItem: {
       id: '',
       condutor: {id: undefined},
@@ -244,7 +244,7 @@ export default {
       entrada: '',
       saida: ''
 
-    } as Movimentacao,
+    } as MovimentacaoCreateDto,
   }),
 
   computed: {
@@ -281,8 +281,8 @@ export default {
     },
 
     resetForm() {
-      this.editedItem.condutor = '';
-      this.editedItem.veiculo = '',
+      this.editedItem.condutor = {} as Condutor;
+      this.editedItem.veiculo = {} as Veiculo,
         this.editedItem.id = 0
     },
     async initialize() {
@@ -313,9 +313,15 @@ export default {
     },
 
     finalizarItem(item) {
-      
+
       this.editedIndex = this.object.indexOf(item)
-      this.editedItem = Object.assign({}, item)
+      this.editedItem = Object.assign({}, {
+        id: item.id,
+        condutor: {id: item.condutor.id},
+        veiculo: {id: item.veiculo.id},
+        entrada: item.entrada,
+        saida: item.saida
+      })
       this.finalizar();
     },
 
@@ -334,7 +340,7 @@ export default {
     close() {
       this.dialog = false
       this.$nextTick(() => {
-        this.editedItem = Object.assign({nome: ''} as Modelo, this.defaultItem)
+        this.editedItem = Object.assign({} as Movimentacao, this.defaultItem)
         this.editedIndex = -1
       })
     },
@@ -342,7 +348,7 @@ export default {
     closeDelete() {
       this.dialogDelete = false
       this.$nextTick(() => {
-        this.editedItem = Object.assign({nome: ''} as Modelo, this.defaultItem)
+        this.editedItem = Object.assign({} as Movimentacao, this.defaultItem)
         this.editedIndex = -1
       })
     },

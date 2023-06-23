@@ -1,5 +1,5 @@
 // Composables
-import { createRouter, createWebHistory } from 'vue-router'
+import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 
 
 const routes = [
@@ -13,12 +13,22 @@ const routes = [
 
         component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
       },
+
+
       {
         path: 'marca',
         name: 'marca',
-
         component: () => import(/* webpackChunkName: "marca" */ '@/views/MarcaView'),
       },
+      {
+        path: 'marcaformulario',
+        name: 'marca-formulario-edit',
+        component: ()=> import(/* webpackChunkName: "marca-formulario-edit" */ '@/views/MarcaFormView.vue')
+      },
+
+
+
+
       {
         path: 'modelo',
         name: 'modelo',
@@ -49,8 +59,6 @@ const routes = [
 
 
   },
-
-
 
 
 ]

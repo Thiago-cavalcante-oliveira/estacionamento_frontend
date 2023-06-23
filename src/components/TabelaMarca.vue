@@ -20,76 +20,21 @@
             v-model="dialog"
             max-width="800px"
           >
-            <template v-slot:activator="{ props }">
-              <v-btn
-                elevation="4"
-                color="green"
-                dark
-                class="mb-2"
-                @click=""
-                v-bind="props"
-              >
-                Cadastrar
-              </v-btn>
+            <template v-slot:activator="{ props }"
+                      class="px-10"
+            >
+              <router-link to="marcaformulario">
+                <v-btn
+                  elevation="4"
+                  color="green"
+                  class="mb-2"
+                  v-bind="props"
+                >
+                  Cadastrar
+                </v-btn>
+              </router-link>
             </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
-              <v-card-text>
-                <v-container>
-                  <v-alert
-                    class="my-6"
-                    v-if="error.length>0"
-                    density="compact"
-                    type="error"
-                    title="Erro: "
-                    :text="error"
-                  ></v-alert>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="3"
-                    >
-                      <v-text-field
-                        disabled
-                        v-model="editedItem.id"
-                        label="ID"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="6"
-                    >
-                      <v-text-field
-                        v-model="editedItem.nome"
-                        label="Nome da Marca"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="close"
-                >
-                  Cancelar
-                </v-btn>
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="acaoSalvar"
-                >
-                  Salvar
-                </v-btn>
-              </v-card-actions>
-            </v-card>
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
@@ -105,14 +50,16 @@
         </v-toolbar>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon
-          color="blue"
-          size="small"
-          class="me-5"
-          @click="editItem(item.raw)"
-        >
-          mdi-pencil
-        </v-icon>
+        <router-link :to="{name:'marca-formulario-edit', query: {id: item.raw.id}}">
+          <v-icon
+            color="blue"
+            size="small"
+            class="me-5"
+
+          >
+            mdi-pencil
+          </v-icon>
+        </router-link>
         <v-icon
           color="red"
           size="small"
@@ -130,16 +77,10 @@
         </v-btn>
       </template>
     </v-data-table>
-    <v-snackbar
-      location="bottom"
-      class="d-flex justify-center"
-      color="green"
-      v-model="snackbar"
-      :timeout="2000"
-    > {{ text }}
-    </v-snackbar>
+
   </v-container>
 </template>
+
 <script lang="ts">
 import {VDataTable} from 'vuetify/labs/VDataTable'
 import {MarcaClient} from "@/client/MarcaClient";
@@ -168,7 +109,7 @@ export default {
     } as Marca,
     defaultItem: {
       nome: '',
-      id: 0,
+      id: undefined,
     },
   }),
 
