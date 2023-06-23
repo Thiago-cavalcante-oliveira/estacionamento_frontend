@@ -12,7 +12,7 @@ export class ConfiguracaoClient {
         });
     }
 
-    public async findById(id: number): Promise<Configuracao> {
+    public async findById(id: number): Promise<CreateConfiguracaoDTO> {
 
         try {
             return (await this.axiosClient.get(`/${id}`)).data

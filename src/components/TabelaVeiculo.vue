@@ -21,6 +21,7 @@
             max-width="800px"
           >
             <template v-slot:activator="{ props }">
+              <router-link to="veiculoformulario">
               <v-btn
                 elevation="4"
                 color="primary"
@@ -30,115 +31,9 @@
               >
                 Cadastrar
               </v-btn>
+              </router-link>
             </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
-              <v-card-text>
-                <v-container>
-                  <v-alert
-                    class="my-6"
-                    v-if="error.length>0"
-                    density="compact"
-                    type="error"
-                    title="Erro: "
-                    :text="error"
-                  ></v-alert>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="3"
-                    >
-                      <v-text-field
-                        disabled
-                        v-model="editedItem.id"
-                        label="ID"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="6"
-                    >
-                      <v-text-field
-                        v-model="editedItem.placa"
-                        label="Placa do Veículo"
-                        v-mask="'AAA-#A##'"
 
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="6"
-                    >
-                      <v-select
-                        label="Modelo"
-                        :items="listaModelos"
-                        item-title="nome"
-                        item-value="id"
-                        v-model="editedItem.modelo.id"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="6"
-                    >
-                      <v-select
-                        label="Cor"
-                        :items="['BRANCO', 'AZUL', 'PRETO', 'CINZA', 'ROXO', 'LARANJA']"
-                        item-value="item"
-                        v-model="editedItem.cor"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="6">
-                      <v-select
-                        label="Tipo"
-                        :items="['MOTO', 'CARRO', 'VAN']"
-                        item-value="item"
-                        v-model="editedItem.tipo"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="6"
-                    >
-                      <v-text-field
-                        v-model="editedItem.ano"
-                        label="Ano de fabricação"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="close"
-                >
-                  Cancelar
-                </v-btn>
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="save"
-                >
-                  Salvar
-                </v-btn>
-              </v-card-actions>
-            </v-card>
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
@@ -153,7 +48,16 @@
           </v-dialog>
         </v-toolbar>
       </template>
+
+
+      <template v-slot:item.ativo="{ item }">
+
+        <v-chip v-if="item.columns.ativo === true" color="green">Ativo</v-chip>
+        <v-chip v-else-if="item.columns.ativo === false" color="red">Inativado</v-chip>
+
+      </template>
       <template v-slot:item.actions="{ item }">
+        <router-link :to="{name:'veiculoformulario', query: {id: item.raw.id}}">
         <v-icon
           color="blue"
           size="small"
@@ -162,6 +66,7 @@
         >
           mdi-pencil
         </v-icon>
+        </router-link>
         <v-icon
           color="red"
           size="small"
@@ -211,10 +116,12 @@ export default {
     listaModelos: [] as Modelo [],
 
     headers: [
-      {title: 'ID', align: 'center', sortable: true, key: 'id',},
-      {title: 'Nome', align: 'center', sortable: true, key: 'placa',},
+      {title: 'ID', align: 'center', sortable: true, key: 'id'},
+      {title: 'Ativo', align: 'center', key:'ativo', sortable: true},
+
+      {title: 'Nome', align: 'center', sortable: true, key: 'placa'},
       {title: 'Marca', align: 'center', sortable: true, key: 'modelo.nome',},
-      {title: 'Cor', key: 'Cor.value'},
+      {title: 'Cor', key: 'cor'},
       {title: 'Tipo do Veículo', key: 'tipo'},
       {title: 'Ano de Fabricação', key: 'ano'},
 
@@ -224,6 +131,7 @@ export default {
     editedIndex: -1,
     editedItem: {
       id: '',
+      ativo: '',
       placa: '',
       modelo: {id: undefined},
       cor: '',
