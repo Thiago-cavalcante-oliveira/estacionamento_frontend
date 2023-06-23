@@ -5,11 +5,15 @@
       :items="object"
       class="elevation-1"
     >
+
       <template v-slot:top>
         <v-toolbar
-          flat
+          height="100"
         >
-          <v-toolbar-title>Lista de Marcas</v-toolbar-title>
+          <v-toolbar-title
+
+          >Lista de Marcas
+          </v-toolbar-title>
           <v-divider
             class="mx-4"
             inset
@@ -25,9 +29,10 @@
             >
               <router-link to="marcaformulario">
                 <v-btn
+                  size="x-large"
                   elevation="4"
-                  color="green"
-                  class="mb-2"
+                  color="teal"
+                  class="mb-2 mr-10"
                   v-bind="props"
                 >
                   Cadastrar
@@ -49,7 +54,14 @@
           </v-dialog>
         </v-toolbar>
       </template>
+      <template v-slot:item.ativo="{ item }">
+
+        <v-chip v-if="item.columns.ativo === true" color="green">Ativo</v-chip>
+        <v-chip v-else-if="item.columns.ativo === false" color="red">Inativado</v-chip>
+
+      </template>
       <template v-slot:item.actions="{ item }">
+
         <router-link :to="{name:'marca-formulario-edit', query: {id: item.raw.id}}">
           <v-icon
             color="blue"
@@ -98,6 +110,7 @@ export default {
     dialogDelete: false,
     headers: [
       {title: 'ID', align: 'center', sortable: true, key: 'id'},
+      {title: 'Ativo', align: 'center', key:'ativo', sortable: true},
       {title: 'Marca', align: 'start', sortable: true, key: 'nome'},
       {title: 'Ações', key: 'actions', sortable: false},
     ],
@@ -106,10 +119,12 @@ export default {
     editedItem: {
       nome: '',
       id: -1,
+      ativo: ''
     } as Marca,
     defaultItem: {
       nome: '',
       id: undefined,
+      ativo: true
     },
   }),
 
@@ -136,13 +151,7 @@ export default {
   },
 
   methods: {
-    acaoSalvar() {
-      if (this.editedIndex === -1) {
-        return this.save()
-      }
-      return this.atualizar()
 
-    },
 
     resetForm() {
       this.editedItem.nome = '';
@@ -150,6 +159,7 @@ export default {
     async initialize() {
       const getApi: MarcaClient = new MarcaClient();
       this.object = await getApi.findAll()
+      console.log(this.object)
     },
 
     editItem(item) {
@@ -171,6 +181,7 @@ export default {
           this.object.splice(this.editedIndex, 1)
           this.text = response
           this.snackbar = true
+        this.initialize()
         }
       ).catch((response) => this.error = response.data)
       this.closeDelete()
@@ -193,47 +204,6 @@ export default {
       })
     },
 
-    save() {
-      const postApi: MarcaClient = new MarcaClient();
-      postApi.cadastrar(this.editedItem).then(() => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
-        this.text = 'Cadastrado com Sucesso'
-        this.snackbar = true
-        this.close()
-        this.error = ''
-        this.$nextTick(() => {
-          this.resetForm()
-          this.initialize()
-        })
-      }).catch((response) => {
-        this.error = response.data
-      })
-    },
-
-    atualizar() {
-      const postApi: MarcaClient = new MarcaClient();
-      postApi.atualizar(this.editedItem).then(() => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
-        this.text = 'Cadastrado com Sucesso'
-        this.snackbar = true
-        this.close()
-        this.error = ''
-        this.$nextTick(() => {
-          this.resetForm()
-          this.initialize()
-        })
-      }).catch((response) => {
-        this.error = response.data
-      })
-    },
 
   },
 }

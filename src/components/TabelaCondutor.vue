@@ -10,49 +10,14 @@
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="1000px">
             <template v-slot:activator="{ props }">
+              <router-link to="condutorformulario">
               <v-btn elevation="4" color="primary" dark class="mb-2" v-bind="props">
                 Cadastrar
               </v-btn>
+              </router-link>
             </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
-              <v-card-text>
-                <v-container>
-                  <v-alert class="my-6" v-if="error.length > 0" density="compact" type="error"
-                           title="Erro: " :text="error"></v-alert>
-                  <v-row>
-                    <v-col cols="12" sm="" md="3">
-                      <v-text-field disabled v-model="editedItem.id" label="ID"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="4" md="4">
-                      <v-text-field v-model="editedItem.nome"
-                                    label="Nome"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="4" md="4">
-                      <v-text-field v-model="editedItem.cpf"
-                                    v-mask="'###.###.###-##'"
-                                    label="CPF"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="4" md="4">
-                      <v-text-field v-model="editedItem.telefone" label="Telefone"
-                                    v-mask="'(##) #####-####'"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="close">
-                  Cancelar
-                </v-btn>
-                <v-btn color="blue-darken-1" variant="text" @click="acaoSalvar">
-                  Salvar
-                </v-btn>
-              </v-card-actions>
-            </v-card>
+
+
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
@@ -67,13 +32,21 @@
           </v-dialog>
         </v-toolbar>
       </template>
+      <template v-slot:item.ativo="{ item }">
+
+        <v-chip v-if="item.columns.ativo === true" color="green">Ativo</v-chip>
+        <v-chip v-else-if="item.columns.ativo === false" color="red">Inativado</v-chip>
+
+      </template>
       <template v-slot:item.actions="{ item }">
+        <router-link :to="{name:'condutorformulario', query: {id: item.raw.id}}">
         <v-icon color="blue" size="small" class="me-5" @click="editItem(item.raw)">
           mdi-pencil
         </v-icon>
         <v-icon color="red" size="small" @click="deleteItem(item.raw)">
           mdi-delete
         </v-icon>
+        </router-link>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">
@@ -105,6 +78,7 @@ export default {
     dialogDelete: false,
     headers: [
       {title: 'ID', align: 'center', sortable: true, key: 'id'},
+      {title: 'Ativo', align:  'center', sortable: true, key:'ativo'},
       {title: 'Nome do Consutor', key: 'nome', align: 'center', sortable: true},
       {title: 'CPF', key: 'cpf', align: 'center', sortable: true},
       {title: 'Telefone', key: 'telefone', align: 'center', sortable: true},
@@ -114,6 +88,7 @@ export default {
     editedIndex: -1,
     editedItem: {
       id: '',
+      ativo: undefined,
       nome: '',
       cpf: '',
       telefone: ''
@@ -122,6 +97,7 @@ export default {
 
     defaultItem: {
       id: undefined,
+      ativo: undefined,
       nome: '',
       cpf: '',
       telefone: '',
@@ -150,12 +126,7 @@ export default {
   },
 
   methods: {
-    acaoSalvar() {
-      if (this.editedIndex === -1) {
-        return this.save()
-      }
-      return this.atualizar()
-    },
+
 
     resetForm() {
       this.editedItem = this.defaultItem;
@@ -207,47 +178,6 @@ export default {
       })
     },
 
-    atualizar() {
-      const postApi: CondutorClient = new CondutorClient();
-      postApi.atualizar(this.editedItem).then(() => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
-        this.text = 'Cadastrado com Sucesso'
-        this.snackbar = true
-        this.close()
-        this.error = ''
-        this.$nextTick(() => {
-          this.resetForm()
-          this.initialize()
-        })
-      }).catch((response) => {
-        this.error = response.data
-      })
-    },
 
-    save() {
-      const postApi: CondutorClient = new CondutorClient();
-      postApi.cadastrar(this.editedItem).then(() => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
-        this.text = 'Cadastrado com Sucesso'
-        this.snackbar = true
-        this.close()
-        this.error = ''
-        this.$nextTick(() => {
-          this.resetForm()
-          this.initialize()
-        })
-      }).catch((response) => {
-        this.error = response.data
-      })
-    },
-  },
-}
+},}
 </script>

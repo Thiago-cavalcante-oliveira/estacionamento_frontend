@@ -34,7 +34,7 @@ export class VeiculoClient {
 
   public async atualizar(veiculo: Veiculo): Promise<string> {
     try {
-      return (await this.axiosClient.put(`/${veiculo.id}`,Veiculo)).data
+      return (await this.axiosClient.put(`/${veiculo.id}`,veiculo)).data
 
     } catch (error: any) {
       return Promise.reject(error.response)

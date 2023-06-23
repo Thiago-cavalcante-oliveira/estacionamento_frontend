@@ -1,58 +1,72 @@
 <template>
-  <v-container fluid>
-    <v-data-table :headers="headers"
-                  :items="object"
-                  class="elevation-2 ">
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-toolbar-title>Configurações</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="1000px">
-            <template v-slot:activator="{ props }">
-              <router-link to="configuracoesformulario">
-              <v-btn elevation="4" color="primary" dark class="mb-2" v-bind="props">
-                Cadastrar
-              </v-btn>
-              </router-link>
-            </template>
-
-          </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5">Deseja realmente deletar este item?</v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancelar</v-btn>
-                <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
-      <template v-slot:item.actions="{ item }">
-
-        <router-link :to="{name:'configuracoesformulario', query: {id: item.raw.id}}">
-        <v-icon color="blue" size="small" class="me-5" @click="editItem(item.raw)">
-          mdi-pencil
-        </v-icon>
-        <v-icon color="red" size="small" @click="deleteItem(item.raw)">
-          mdi-delete
-        </v-icon>
-        </router-link>
-      </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">
-          Reset
-        </v-btn>
-      </template>
-    </v-data-table>
-    <v-snackbar location="bottom" class="align-content-center" color="green" v-model="snackbar" :timeout="2000">
-      {{ text }}
-    </v-snackbar>
-  </v-container>
+  <v-card>
+    <v-card-title>
+      <span class="text-h5">{{ formTitle }}</span>
+    </v-card-title>
+    <v-card-text>
+      <v-container>
+        <v-alert class="my-6" v-if="error.length > 0" density="compact" type="error"
+                 title="Erro: " :text="error"></v-alert>
+        <v-row>
+          <v-col cols="12" sm="" md="3">
+            <v-text-field disabled v-model="editedItem.id" label="ID"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4" md="4">
+            <v-text-field v-mask="'##:##'" v-model="editedItem.inicioExpediente"
+                          label="Horário de abertura"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4" md="4">
+            <v-text-field v-mask="'##:##'" v-model="editedItem.fimExpediente"
+                          label="Horário de encerramento"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4" md="4">
+            <v-text-field v-model="editedItem.valorHora" label="Valor da hora"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4" md="4">
+            <v-text-field v-model="editedItem.valorMinutoMulta"
+                          label="Valor do minuto de multa"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4" md="4">
+            <v-text-field v-model="editedItem.tempoParaGerarDesconto"
+                          label="Tempo acumulado para gerar desconto"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4" md="4">
+            <v-text-field v-model="editedItem.tempoDeCreditoDesconto"
+                          suffix=" horas"
+                          label="Crédito a ser usado"></v-text-field>
+          </v-col>
+          <v-select
+            label="Gerar desconto?"
+            :items="[{title:'SIM', value: true},{title: 'NÃO', value: false } ]"
+            v-model="editedItem.gerarDesconto"
+            variant="solo"
+          ></v-select>
+          <v-col cols="12" sm="6" md="6">
+            <v-text-field v-model="editedItem.vagasCarro" label="Vagas para Carro"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6" md="6">
+            <v-text-field v-model="editedItem.vagasMoto" label="Vagas para Moto"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6" md="6">
+            <v-text-field v-model="editedItem.vagasVan" label="Vagas para Van"></v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <router-link to="configuracoes">
+      <v-btn color="blue-darken-1" variant="text" @click="close">
+        Cancelar
+      </v-btn>
+      </router-link>
+      <v-btn color="blue-darken-1" variant="text" @click="acaoSalvar">
+        Salvar
+      </v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
+
 <script lang="ts">
 import {VDataTable} from 'vuetify/labs/VDataTable'
 import {CreateConfiguracaoDTO} from '@/models/Configuracao';
@@ -122,23 +136,28 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Novo item' : 'Editar item'
     },
+    id(){
+      return this.$route.query.id
+    }
   },
 
   watch: {
     dialog(val) {
       val || this.close()
     },
-
-    dialogDelete(val) {
-      val || this.closeDelete()
     },
-  },
 
   created() {
-    this.initialize()
+    if (this.id !== undefined) {
+      this.findById(this.id)}
   },
 
   methods: {
+
+    async findById(id:number){
+      const getApi: ConfiguracaoClient= new ConfiguracaoClient();
+      this.editedItem = await getApi.findById(id)
+    },
     acaoSalvar() {
       if (this.editedIndex === -1) {
         return this.save()
@@ -240,3 +259,7 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+
+</style>

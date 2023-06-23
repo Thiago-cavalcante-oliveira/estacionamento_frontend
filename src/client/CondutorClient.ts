@@ -41,7 +41,7 @@ export class CondutorClient {
 
     public async atualizar(condutor: Condutor): Promise<string> {
         try {
-            return (await this.axiosClient.put(`/${condutor.id}`,Condutor)).data
+            return (await this.axiosClient.put(`/${condutor.id}`,condutor)).data
 
         } catch (error: any) {
             return Promise.reject(error.response)
