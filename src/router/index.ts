@@ -2,6 +2,7 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 
 
+
 const routes = [
   {
     path: '/',
@@ -79,6 +80,11 @@ const routes = [
 
         component: () => import(/* webpackChunkName: "configuracoesformulario" */ '@/views/ConfiguracoesFormView'),
       },
+      {
+        path:'recibo',
+        name: 'recibo',
+        component: () => import(/* webpackChunkName: "recibo" */ '@/views/ReciboView')
+      }
 
 
     ],

@@ -39,7 +39,7 @@ export class ConfiguracaoClient {
         }
     }
 
-    public async delete(configuracao: Configuracao): Promise<string> {
+    public async delete(configuracao: CreateConfiguracaoDTO): Promise<string> {
         try {
             return (await this.axiosClient.delete(`/${configuracao.id}`)).data
 

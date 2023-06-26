@@ -139,12 +139,7 @@ export default {
   },
 
   methods: {
-    acaoSalvar() {
-      if (this.editedIndex === -1) {
-        return this.save()
-      }
-      return this.atualizar()
-    },
+
 
     resetForm() {
       this.editedItem = this.defaultItem;
