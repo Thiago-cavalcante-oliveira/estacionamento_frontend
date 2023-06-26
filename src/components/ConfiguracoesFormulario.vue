@@ -181,23 +181,6 @@ export default {
       this.text = ""
     },
 
-    deleteItem(item: any) {
-      this.dialogDelete = true
-      this.editedIndex = this.object.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-    },
-
-    deleteItemConfirm() {
-      const deleteApi: ConfiguracaoClient = new ConfiguracaoClient();
-      deleteApi.delete(this.editedItem).then(response => {
-          this.object.splice(this.editedIndex, 1)
-          this.text = response
-          this.snackbar = true
-        }
-      ).catch((response) => this.error = response.data)
-      this.closeDelete()
-      this.initialize()
-    },
 
     close() {
       this.dialog = false
@@ -207,30 +190,21 @@ export default {
       })
     },
 
-    closeDelete() {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({} as CreateConfiguracaoDTO, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
     atualizar() {
       const postApi: ConfiguracaoClient = new ConfiguracaoClient();
       postApi.atualizar(this.editedItem).then(() => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
+
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
         this.close()
+        this.$router.push('/configuracoes')
         this.error = ''
         this.$nextTick(() => {
           this.resetForm()
           this.initialize()
+
         })
+
       }).catch((response) => {
         this.error = response.data
       })
@@ -239,11 +213,7 @@ export default {
     save() {
       const postApi: ConfiguracaoClient = new ConfiguracaoClient();
       postApi.cadastrar(this.editedItem).then(() => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
+
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
         this.close()

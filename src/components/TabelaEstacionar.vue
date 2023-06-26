@@ -29,7 +29,8 @@
                 class="mb-2"
                 v-bind="props"
               >
-                Cadastrar
+                Estacionar
+
               </v-btn>
             </template>
             <v-card>
@@ -118,7 +119,7 @@
         </v-toolbar>
       </template>
       <template v-slot:item.actions="{ item }"
-                class
+                class=""
       >
         <v-icon
           color="blue"
@@ -135,20 +136,32 @@
         >
           mdi-delete
         </v-icon>
+
         <v-btn
           @click="finalizarItem(item.raw)"
         >Finalizar
         </v-btn>
+        <router-link :to="{name: 'recibo', query: {id: item.raw.id}}">
+          <v-btn
+            color="orange"
+            v-if="showButton"
+            :disabled="modalRecibo"
+            class="ml-10"
+            title="Acessar Recibo"
+            prepend-icon="mdi-form-select"
+          >Recibo
+          </v-btn>
+        </router-link>
+
+
       </template>
       <template v-slot:no-data>
         <v-btn
-
           color="primary"
           @click="initialize"
         >
           Reset
         </v-btn>
-
       </template>
     </v-data-table>
     <v-snackbar
@@ -169,22 +182,8 @@
     >
 
       <template v-slot:default="{ isActive }">
-        <v-card>
-          <v-toolbar
-            color="primary"
-            title="Opening from the bottom"
-          ></v-toolbar>
-          <v-card-text>
-            <div class=" pa-12">{{ recibo }}</div>
-          </v-card-text>
-          <v-card-actions class="justify-end">
-            <v-btn
-              variant="text"
-              @click="isActive.value = false"
-            >Close
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+
+
       </template>
     </v-dialog>
   </v-container>
@@ -208,7 +207,8 @@ export default {
   },
   data: () => ({
 
-    modalRecibo: false,
+    modalRecibo: true,
+    showButton: false,
     text: '',
     snackbar: false,
     error: '',
@@ -217,6 +217,7 @@ export default {
     listaVeiculos: [] as Veiculo [],
     listaCondutores: [] as Condutor [],
     recibo: '',
+    teste: {} as Movimentacao,
 
     headers: [
       {title: 'ID', align: 'center', sortable: true, key: 'id'},
@@ -234,15 +235,14 @@ export default {
       condutor: {id: undefined},
       veiculo: {id: undefined},
       entrada: '',
-      saida: ''
-
+      saida: undefined
     } as MovimentacaoCreateDto,
     defaultItem: {
-      id: '',
+      id: undefined,
       condutor: {id: undefined},
       veiculo: {id: undefined},
       entrada: '',
-      saida: ''
+      saida: undefined
 
     } as MovimentacaoCreateDto,
   }),
@@ -272,6 +272,13 @@ export default {
 
   methods: {
 
+    async preencheRecibo(id: number) {
+      const getAPi: MovimentacaoClient = new MovimentacaoClient();
+      this.teste = await getAPi.findById(id)
+      console.log(this.teste)
+
+    },
+
     acaoSalvar() {
       if (this.editedIndex === -1) {
         return this.save()
@@ -299,7 +306,6 @@ export default {
       this.listaVeiculos = await getApiVeiculos.findAll()
     },
 
-
     editItem(item) {
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -311,6 +317,7 @@ export default {
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, item)
     },
+
 
     finalizarItem(item) {
 
@@ -383,8 +390,11 @@ export default {
       patchApi.finalizar(this.editedItem).then(response => {
           this.initialize()
           this.recibo = response
+          console.log(this.recibo)
+          this.preencheRecibo(this.editedItem.id)
           this.text = "Finalizado"
-          this.modalRecibo = true
+          this.showButton = true
+          this.modalRecibo = false
           this.snackbar = true
         }
       ).catch((response) => this.error = response.data)
