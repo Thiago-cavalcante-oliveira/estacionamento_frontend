@@ -1,12 +1,14 @@
 <template>
-<v-container>
+<v-container >
 <v-card-title>
   <span class="text-h5">{{ formTitle }}</span>
 </v-card-title>
-<v-card-text>
-  <v-container>
-
+<v-card-text class="d-flex justify-center">
+  <v-container >
+<v-row class="d-flex justify-center">
     <v-alert
+      max-width="400"
+      closable
       class="my-6"
       v-if="error.length>0"
       density="compact"
@@ -14,14 +16,18 @@
       title="Erro: "
       :text="error"
     ></v-alert>
-    <v-row>
+</v-row>
+    <v-row class="d-flex justify-center">
       <v-col
+
         cols="12"
         sm="6"
-        md="3"
+        md="1"
       >
         <v-text-field
-          disabled
+          readonly
+          v-if="this.id !== undefined"
+          variant="solo-filled"
           v-model="editedItem.id"
           label="ID"
         ></v-text-field>
@@ -29,15 +35,17 @@
       <v-col
         cols="12"
         sm="6"
-        md="6"
+        md="4"
       >
         <v-text-field
+          variant="solo-filled"
           v-model="editedItem.nome"
           label="Nome do Modelo"
         ></v-text-field>
       </v-col>
-      <v-col>
+      <v-col cols="12" sm="3">
         <v-select
+          variant="solo-filled"
           label="Marca"
           :items="listaMarcas"
           item-title="nome"

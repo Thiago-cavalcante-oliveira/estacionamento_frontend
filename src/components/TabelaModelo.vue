@@ -7,9 +7,10 @@
     >
       <template v-slot:top>
         <v-toolbar
-          flat
+          height="100"
         >
-          <v-toolbar-title>Lista de Modelos</v-toolbar-title>
+          <v-toolbar-title
+          >Lista de Modelos</v-toolbar-title>
           <v-divider
             class="mx-4"
             inset
@@ -22,18 +23,17 @@
           >
             <template v-slot:activator="{ props }">
               <router-link to="modeloformulario">
-              <v-btn
-                elevation="4"
-                color="primary"
-                dark
-                class="mb-2"
-                v-bind="props"
-              >
-                Cadastrar
-              </v-btn>
+                <v-btn
+                  variant="elevated"
+                  size="x-large"
+                  elevation="4"
+                  color="green"
+                  class="mb-2 mr-10"
+                >
+                  Cadastrar
+                </v-btn>
               </router-link>
             </template>
-
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
@@ -49,10 +49,8 @@
         </v-toolbar>
       </template>
       <template v-slot:item.ativo="{ item }">
-
         <v-chip v-if="item.columns.ativo === true" color="green">Ativo</v-chip>
         <v-chip v-else-if="item.columns.ativo === false" color="red">Inativado</v-chip>
-
       </template>
       <template v-slot:item.actions="{ item }">
         <router-link :to="{name:'modeloformulario', query: {id: item.raw.id}}">
@@ -211,8 +209,6 @@ export default {
         this.editedIndex = -1
       })
     },
-
-
   },
 }
 </script>

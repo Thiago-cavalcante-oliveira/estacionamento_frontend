@@ -5,22 +5,28 @@
     </v-card-title>
     <v-card-text>
       <v-container>
-        <v-alert
-          class="my-6"
-          v-if="error.length>0"
-          density="compact"
-          type="error"
-          title="Erro: "
-          :text="error"
-        ></v-alert>
+        <v-row class="d-flex justify-center">
+          <v-alert
+            max-width="400"
+            closable="true"
+            class="my-6"
+            v-if="error.length>0"
+            density="compact"
+            type="error"
+            title="Erro: "
+            :text="error"
+          ></v-alert>
+        </v-row>
         <v-row>
           <v-col
             cols="12"
             sm="6"
-            md="3"
+            md="1"
           >
             <v-text-field
-              disabled
+              v-if="this.id !== undefined"
+              readonly
+              variant="solo-filled"
               v-model="editedItem.id"
               label="ID"
             ></v-text-field>
@@ -28,9 +34,11 @@
           <v-col
             cols="12"
             sm="6"
-            md="6"
+            md="2"
           >
             <v-text-field
+              variant="solo-filled"
+              hint="Informe a placa no padrão: AAA-1A11"
               v-model="editedItem.placa"
               label="Placa do Veículo"
               v-mask="'AAA-#A##'"
@@ -40,9 +48,11 @@
           <v-col
             cols="12"
             sm="6"
-            md="6"
+            md="2"
           >
             <v-select
+              variant="solo-filled"
+
               label="Modelo"
               :items="listaModelos"
               item-title="nome"
@@ -54,9 +64,10 @@
           <v-col
             cols="12"
             sm="6"
-            md="6"
+            md="2"
           >
             <v-select
+              variant="solo-filled"
               label="Cor"
               :items="['BRANCO', 'AZUL', 'PRETO', 'CINZA', 'ROXO', 'LARANJA']"
               item-value="item"
@@ -67,8 +78,9 @@
           <v-col
             cols="12"
             sm="6"
-            md="6">
+            md="2">
             <v-select
+              variant="solo-filled"
               label="Tipo"
               :items="['MOTO', 'CARRO', 'VAN']"
               item-value="item"
@@ -79,9 +91,14 @@
           <v-col
             cols="12"
             sm="6"
-            md="6"
+            md="2"
           >
             <v-text-field
+              variant="solo-filled"
+              counter="4"
+              maxlength="4"
+              minlength="4"
+              hint="Informe um ano entre 1900 e 2025"
               v-model="editedItem.ano"
               label="Ano de fabricação"
             ></v-text-field>

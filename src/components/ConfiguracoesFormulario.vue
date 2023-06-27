@@ -5,50 +5,96 @@
     </v-card-title>
     <v-card-text>
       <v-container>
-        <v-alert class="my-6" v-if="error.length > 0" density="compact" type="error"
-                 title="Erro: " :text="error"></v-alert>
-        <v-row>
-          <v-col cols="12" sm="" md="3">
-            <v-text-field disabled v-model="editedItem.id" label="ID"></v-text-field>
+        <v-row class="d-flex justify-center">
+          <v-alert
+            max-width="400"
+            closable
+            class="my-6"
+            v-if="error.length>0"
+            density="compact"
+            type="error"
+            title="Erro: "
+            :text="error"
+          ></v-alert>
+        </v-row>
+        <v-row class="d-flex justify-center">
+          <v-col cols="12" sm="" md="1">
+            <v-text-field
+              v-if="this.id !== undefined"
+              variant="solo-filled"
+              readonly
+              v-model="editedItem.id"
+              label="ID"></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4" md="4">
-            <v-text-field v-mask="'##:##'" v-model="editedItem.inicioExpediente"
-                          label="Horário de abertura"></v-text-field>
+          <v-col cols="12" sm="2">
+            <v-text-field
+              variant="solo-filled"
+              hint="Formato 00:00"
+              v-mask="'##:##'"
+              v-model="editedItem.inicioExpediente"
+              label="Hora abertura"></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4" md="4">
-            <v-text-field v-mask="'##:##'" v-model="editedItem.fimExpediente"
-                          label="Horário de encerramento"></v-text-field>
+          <v-col cols="12" sm="2">
+            <v-text-field
+              align="center"
+              variant="solo-filled"
+              hint="Formato 00:00"
+              v-mask="'##:##'"
+              v-model="editedItem.fimExpediente"
+              label="Hora encerramento"></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4" md="4">
-            <v-text-field v-model="editedItem.valorHora" label="Valor da hora"></v-text-field>
+        </v-row>
+        <v-row class="d-flex justify-center">
+          <v-col cols="12" sm="3">
+            <v-text-field
+              variant="solo-filled"
+              prefix="R$ "
+              v-model="editedItem.valorHora"
+              label="Valor da hora"></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4" md="4">
-            <v-text-field v-model="editedItem.valorMinutoMulta"
-                          label="Valor do minuto de multa"></v-text-field>
+          <v-col cols="12" sm="4" md="2">
+            <v-text-field
+              prefix="R$ "
+              variant="solo-filled"
+              v-model="editedItem.valorMinutoMulta"
+              label="Valor do minuto de multa"></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4" md="4">
-            <v-text-field v-model="editedItem.tempoParaGerarDesconto"
-                          label="Tempo acumulado para gerar desconto"></v-text-field>
+        </v-row>
+        <v-row class="d-flex justify-center">
+          <v-col cols="12" sm="2">
+            <v-text-field
+              hint="informar total de horas"
+              variant="solo-filled"
+              v-model="editedItem.tempoParaGerarDesconto"
+              label="Tempo para desconto"></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4" md="4">
-            <v-text-field v-model="editedItem.tempoDeCreditoDesconto"
-                          suffix=" horas"
-                          label="Crédito a ser usado"></v-text-field>
+          <v-col cols="12" sm="2">
+            <v-text-field
+              variant="solo-filled"
+              v-model="editedItem.tempoDeCreditoDesconto"
+              suffix=" horas"
+              label="Crédito a ser usado"></v-text-field>
           </v-col>
-          <v-select
-            label="Gerar desconto?"
-            :items="[{title:'SIM', value: true},{title: 'NÃO', value: false } ]"
-            v-model="editedItem.gerarDesconto"
-            variant="solo"
-          ></v-select>
-          <v-col cols="12" sm="6" md="6">
-            <v-text-field v-model="editedItem.vagasCarro" label="Vagas para Carro"></v-text-field>
+          <v-col cols="12" sm="2">
+            <v-select
+              label="Gerar desconto?"
+              :items="[{title:'SIM', value: true},{title: 'NÃO', value: false } ]"
+              v-model="editedItem.gerarDesconto"
+              variant="solo"
+            ></v-select>
           </v-col>
-          <v-col cols="12" sm="6" md="6">
-            <v-text-field v-model="editedItem.vagasMoto" label="Vagas para Moto"></v-text-field>
+        </v-row>
+        <v-row class="d-flex justify-center">
+          <v-col cols="12" sm="2">
+            <v-text-field
+              variant="solo-filled"
+              v-model="editedItem.vagasCarro" label="Vagas para Carro"></v-text-field>
           </v-col>
-          <v-col cols="12" sm="6" md="6">
-            <v-text-field v-model="editedItem.vagasVan" label="Vagas para Van"></v-text-field>
+          <v-col cols="12" sm="2">
+            <v-text-field variant="solo-filled" v-model="editedItem.vagasMoto" label="Vagas para Moto"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="2">
+            <v-text-field variant="solo-filled" v-model="editedItem.vagasVan" label="Vagas para Van"></v-text-field>
           </v-col>
         </v-row>
       </v-container>
@@ -56,9 +102,9 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <router-link to="configuracoes">
-      <v-btn color="blue-darken-1" variant="text" @click="close">
-        Cancelar
-      </v-btn>
+        <v-btn color="blue-darken-1" variant="text" @click="close">
+          Cancelar
+        </v-btn>
       </router-link>
       <v-btn color="blue-darken-1" variant="text" @click="acaoSalvar">
         Salvar
@@ -100,7 +146,7 @@ export default {
     ],
     object: [] as Configuracao[],
 
-    editedIndex: -1,
+    editedIndex: undefined,
 
     editedItem: {
       id: '',
@@ -118,7 +164,7 @@ export default {
     } as CreateConfiguracaoDTO,
 
     defaultItem: {
-      id: -1,
+      id: undefined,
       inicioExpediente: '',
       valorHora: 0,
       valorMinutoMulta: 0,
@@ -136,7 +182,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Novo item' : 'Editar item'
     },
-    id(){
+    id() {
       return this.$route.query.id
     }
   },
@@ -145,17 +191,19 @@ export default {
     dialog(val) {
       val || this.close()
     },
-    },
+  },
 
   created() {
     if (this.id !== undefined) {
-      this.findById(this.id)}
+      this.findById(this.id)
+    }
   },
 
   methods: {
 
-    async findById(id:number){
-      const getApi: ConfiguracaoClient= new ConfiguracaoClient();
+
+    async findById(id: number) {
+      const getApi: ConfiguracaoClient = new ConfiguracaoClient();
       this.editedItem = await getApi.findById(id)
     },
     acaoSalvar() {
@@ -186,7 +234,7 @@ export default {
       this.dialog = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({} as CreateConfiguracaoDTO, this.defaultItem)
-        this.editedIndex = -1
+        this.editedIndex = undefined
       })
     },
 
@@ -197,11 +245,12 @@ export default {
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
         this.close()
-        this.$router.push('/configuracoes')
+
         this.error = ''
         this.$nextTick(() => {
           this.resetForm()
           this.initialize()
+          this.$router.push('/configuracoes')
 
         })
 

@@ -4,16 +4,22 @@
                   :items="object"
                   class="elevation-2 ">
       <template v-slot:top>
-        <v-toolbar flat>
+        <v-toolbar height="100" flat>
           <v-toolbar-title>Lista de Condutores</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="1000px">
             <template v-slot:activator="{ props }">
               <router-link to="condutorformulario">
-              <v-btn elevation="4" color="primary" dark class="mb-2" v-bind="props">
-                Cadastrar
-              </v-btn>
+                <v-btn
+                  variant="elevated"
+                  size="x-large"
+                  elevation="4"
+                  color="green"
+                  class="mb-2 mr-10"
+                >
+                  Cadastrar
+                </v-btn>
               </router-link>
             </template>
 
@@ -43,10 +49,11 @@
         <v-icon color="blue" size="small" class="me-5" @click="editItem(item.raw)">
           mdi-pencil
         </v-icon>
+        </router-link>
         <v-icon color="red" size="small" @click="deleteItem(item.raw)">
           mdi-delete
         </v-icon>
-        </router-link>
+
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">

@@ -8,6 +8,7 @@
       <template v-slot:top>
         <v-toolbar
           flat
+          height="100"
         >
           <v-toolbar-title>Lista de Veículos</v-toolbar-title>
           <v-divider
@@ -22,15 +23,15 @@
           >
             <template v-slot:activator="{ props }">
               <router-link to="veiculoformulario">
-              <v-btn
-                elevation="4"
-                color="primary"
-                dark
-                class="mb-2"
-                v-bind="props"
-              >
-                Cadastrar
-              </v-btn>
+                <v-btn
+                  variant="elevated"
+                  size="x-large"
+                  elevation="4"
+                  color="green"
+                  class="mb-2 mr-10"
+                >
+                  Cadastrar
+                </v-btn>
               </router-link>
             </template>
 

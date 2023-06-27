@@ -10,6 +10,7 @@ export class Veiculo extends Entitty{
     ano!: number
 
     constructor() {
+
         super();
     }
 }

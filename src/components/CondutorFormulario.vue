@@ -5,24 +5,72 @@
     </v-card-title>
     <v-card-text>
       <v-container>
-        <v-alert class="my-6" v-if="error.length > 0" density="compact" type="error"
-                 title="Erro: " :text="error"></v-alert>
+        <v-row class="d-flex justify-center">
+          <v-alert
+            max-width="400"
+            closable
+            class="my-6"
+            v-if="error.length>0"
+            density="compact"
+            type="error"
+            title="Erro: "
+            :text="error"
+          ></v-alert>
+        </v-row>
         <v-row>
-          <v-col cols="12" sm="" md="3">
-            <v-text-field disabled v-model="editedItem.id" label="ID"></v-text-field>
+          <v-col cols="12" sm="" md="1">
+            <v-text-field
+              v-if="this.id !== undefined"
+              variant="solo-filled"
+              readonly=""
+              v-model="editedItem.id"
+              label="ID"></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4" md="4">
-            <v-text-field v-model="editedItem.nome"
-                          label="Nome"></v-text-field>
+          <v-col cols="12" sm="4" md="3"
+
+          >
+            <v-text-field
+              variant="solo-filled"
+              counter="150"
+              hint="Límite de 150 caracteres"
+              v-model="editedItem.nome"
+              label="Nome"></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4" md="4">
-            <v-text-field v-model="editedItem.cpf"
-                          v-mask="'###.###.###-##'"
-                          label="CPF"></v-text-field>
+          <v-col cols="12" sm="4" md="2">
+            <v-text-field
+              variant="solo-filled"
+              v-model="editedItem.cpf"
+              v-mask="'###.###.###-##'"
+              label="CPF"></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4" md="4">
-            <v-text-field v-model="editedItem.telefone" label="Telefone"
-                          v-mask="'(##) #####-####'"
+          <v-col cols="12" sm="4" md="2">
+            <v-text-field
+
+              variant="solo-filled"
+              hint="Informar o DDD : (XX) XXXXX-XXXX"
+              v-model="editedItem.telefone" label="Telefone"
+              v-mask="'(##) #####-####'"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4" md="2">
+              <v-text-field
+                v-if="editedItem.tempoPagoEmHora >0"
+                bg-color="red-lighten-3"
+                variant="solo-filled"
+                readonly
+                v-model="editedItem.tempoPagoEmHora" label="Tempo Acumulado"
+              ></v-text-field>
+
+          </v-col>
+          <v-col cols="12" sm="4" md="2">
+            <v-text-field
+              v-if="editedItem.tempoDesconto >0"
+              bg-color="red-lighten-3"
+              suffix="minutos"
+              variant="solo-filled"
+              readonly
+              v-model="editedItem.tempoDesconto" label="Desconto para uso"
+
             ></v-text-field>
           </v-col>
         </v-row>
@@ -46,7 +94,7 @@
 import {VDataTable} from 'vuetify/labs/VDataTable'
 
 
-import {Condutor} from "@/models/condutor";
+import {Condutor, CreateCondutorDTO} from "@/models/condutor";
 import {CondutorClient} from "@/client/CondutorClient";
 import {VeiculoClient} from "@/client/VeiculoClient";
 
@@ -60,22 +108,18 @@ export default {
     error: '',
     dialog: false,
     dialogDelete: false,
-    headers: [
-      {title: 'ID', align: 'center', sortable: true, key: 'id'},
-      {title: 'Nome do Consutor', key: 'nome', align: 'center', sortable: true},
-      {title: 'CPF', key: 'cpf', align: 'center', sortable: true},
-      {title: 'Telefone', key: 'telefone', align: 'center', sortable: true},
-      {title: 'Ações', key: 'actions', sortable: false},
-    ],
-    object: [] as Condutor[],
+
+
     editedIndex: -1,
     editedItem: {
       id: '',
       nome: '',
       cpf: '',
-      telefone: ''
+      telefone: '',
 
-    } as Condutor,
+
+
+    } as CreateCondutorDTO,
 
     defaultItem: {
       id: undefined,
@@ -83,7 +127,7 @@ export default {
       cpf: '',
       telefone: '',
 
-    } as Condutor,
+    } as CreateCondutorDTO,
   }),
 
   computed: {
@@ -95,13 +139,6 @@ export default {
     }
   },
 
-  watch: {
-    dialog(val) {
-      val || this.close()
-
-    },
-
-  },
 
   created() {
 
@@ -130,34 +167,19 @@ export default {
       this.editedItem = this.defaultItem;
     },
 
-    editItem(item) {
-      this.editedIndex = this.object.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
-      this.text = ""
-    },
 
 
-    close() {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({} as Condutor, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
+
+
 
 
     atualizar() {
       const postApi: CondutorClient = new CondutorClient();
       postApi.atualizar(this.editedItem).then(() => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
+
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
-        this.close()
+
         this.error = ''
         this.$nextTick(() => {
           this.resetForm()
@@ -172,14 +194,10 @@ export default {
     save() {
       const postApi: CondutorClient = new CondutorClient();
       postApi.cadastrar(this.editedItem).then(() => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
+
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
-        this.close()
+
         this.error = ''
         this.$nextTick(() => {
           this.resetForm()
@@ -193,7 +211,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

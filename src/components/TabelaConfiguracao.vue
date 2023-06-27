@@ -11,9 +11,9 @@
           <v-dialog v-model="dialog" max-width="1000px">
             <template v-slot:activator="{ props }">
               <router-link to="configuracoesformulario">
-              <v-btn elevation="4" color="primary" dark class="mb-2" v-bind="props">
-                Cadastrar
-              </v-btn>
+                <v-btn elevation="4" color="primary" dark class="mb-2" v-bind="props">
+                  Cadastrar
+                </v-btn>
               </router-link>
             </template>
 
@@ -31,15 +31,27 @@
           </v-dialog>
         </v-toolbar>
       </template>
+      <template v-slot:item.valorHora="{ item }">
+        {{formatarValor(item.columns.valorHora)}}
+      </template>
+      <template v-slot:item.valorMinutoMulta="{ item }">
+        {{formatarValor(item.columns.valorMinutoMulta)}}
+      </template>
+      <template v-slot:item.tempoParaGerarDesconto="{ item }">
+        {{formatarHora(item.columns.tempoParaGerarDesconto)}}
+      </template>
+      <template v-slot:item.tempoDeCreditoDesconto="{ item }">
+        {{formatarHora(item.columns.tempoDeCreditoDesconto)}}
+      </template>
       <template v-slot:item.actions="{ item }">
 
         <router-link :to="{name:'configuracoesformulario', query: {id: item.raw.id}}">
-        <v-icon color="blue" size="small" class="me-5" @click="editItem(item.raw)">
-          mdi-pencil
-        </v-icon>
-        <v-icon color="red" size="small" @click="deleteItem(item.raw)">
-          mdi-delete
-        </v-icon>
+          <v-icon color="blue" size="small" class="me-5" @click="editItem(item.raw)">
+            mdi-pencil
+          </v-icon>
+          <v-icon color="red" size="small" @click="deleteItem(item.raw)">
+            mdi-delete
+          </v-icon>
         </router-link>
       </template>
       <template v-slot:no-data>
@@ -140,6 +152,13 @@ export default {
 
   methods: {
 
+    formatarValor(valor){
+      return `R$ ${valor},00`
+
+    },
+formatarHora(valor){
+      return `${valor} hora(s)`
+},
 
     resetForm() {
       this.editedItem = this.defaultItem;
@@ -194,11 +213,6 @@ export default {
     atualizar() {
       const postApi: ConfiguracaoClient = new ConfiguracaoClient();
       postApi.atualizar(this.editedItem).then(() => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
         this.text = 'Cadastrado com Sucesso'
         this.snackbar = true
         this.close()

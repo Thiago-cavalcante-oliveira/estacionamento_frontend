@@ -60,6 +60,8 @@
                         label="ID"
                       ></v-text-field>
                     </v-col>
+
+
                     <v-col
                       cols="12"
                       sm="6"
@@ -83,6 +85,7 @@
                       >
                       </v-select>
                     </v-col>
+
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -98,7 +101,7 @@
                 <v-btn
                   color="blue-darken-1"
                   variant="text"
-                  @click="acaoSalvar"
+                  @click="acaoSalvar()"
                 >
                   Salvar
                 </v-btn>
@@ -117,6 +120,22 @@
             </v-card>
           </v-dialog>
         </v-toolbar>
+      </template>
+      <template v-slot:item.entrada="{ item }">
+        {{formataData(item.columns.entrada)}}
+
+      </template>
+      <template v-slot:item.horaEntrada="{ item }">
+        {{formataHora(item.columns.entrada)}}
+
+      </template>
+      <template v-slot:item.saida="{ item }">
+        {{formataData(item.columns.saida)}}
+
+      </template>
+      <template v-slot:item.horaSaida="{ item }">
+        {{formataHora(item.columns.saida)}}
+
       </template>
       <template v-slot:item.actions="{ item }"
                 class=""
@@ -138,22 +157,21 @@
         </v-icon>
 
         <v-btn
+          class="ml-10"
+          v-if="item.columns.saida == null"
           @click="finalizarItem(item.raw)"
         >Finalizar
         </v-btn>
-        <router-link :to="{name: 'recibo', query: {id: item.raw.id}}">
+        <router-link v-if="item.columns.saida !== null"
+                     :to="{name: 'recibo', query: {id: item.raw.id}}">
           <v-btn
             color="orange"
-            v-if="showButton"
-            :disabled="modalRecibo"
             class="ml-10"
             title="Acessar Recibo"
             prepend-icon="mdi-form-select"
           >Recibo
           </v-btn>
         </router-link>
-
-
       </template>
       <template v-slot:no-data>
         <v-btn
@@ -169,23 +187,11 @@
       class="align-content-center"
       color="green"
       v-model="snackbar"
-      :timeout="2000"
+      :timeout="3000"
     >
       {{ text }}
-
-
     </v-snackbar>
-    <v-dialog
-      v-model="modalRecibo"
-      transition="dialog-bottom-transition"
-      width="500"
-    >
 
-      <template v-slot:default="{ isActive }">
-
-
-      </template>
-    </v-dialog>
   </v-container>
 </template>
 <script lang="ts">
@@ -207,8 +213,9 @@ export default {
   },
   data: () => ({
 
-    modalRecibo: true,
-    showButton: false,
+    horaentrada: '',
+    datasaida: '',
+    horasaida: '',
     text: '',
     snackbar: false,
     error: '',
@@ -222,9 +229,12 @@ export default {
     headers: [
       {title: 'ID', align: 'center', sortable: true, key: 'id'},
       {title: 'Condutor', align: 'center', sortable: true, key: 'condutor.nome'},
+      {title: 'Veículo', align: 'center', sortable: true, key: 'veiculo.modelo.nome'},
       {title: 'Veículo', align: 'center', sortable: true, key: 'veiculo.placa'},
       {title: "Data Entrada", align: 'center', key: 'entrada'},
+      {title: "Hora Entrada", align: 'center', key: 'horaEntrada'},
       {title: "Data saída", align: 'center', key: 'saida'},
+      {title: "Hora saída", align: 'center', key: 'horaSaida'},
       {title: 'Ações', key: 'actions', sortable: false}
 
     ],
@@ -235,15 +245,17 @@ export default {
       condutor: {id: undefined},
       veiculo: {id: undefined},
       entrada: '',
-      saida: undefined
+      hora:'',
+      saida: ''
+
     } as MovimentacaoCreateDto,
+
     defaultItem: {
       id: undefined,
       condutor: {id: undefined},
       veiculo: {id: undefined},
       entrada: '',
       saida: undefined
-
     } as MovimentacaoCreateDto,
   }),
 
@@ -251,14 +263,13 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Novo item' : 'Editar item'
     },
-
   },
 
   watch: {
     dialog(val) {
       val || this.close()
-
     },
+
     dialogDelete(val) {
       val || this.closeDelete()
     },
@@ -272,11 +283,31 @@ export default {
 
   methods: {
 
+    formataData (date: Date){
+      if(date !== null) {
+        //console.log(date)
+        const entradaData = new Date(date).toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        })
+        return entradaData;
+      }
+      return ''
+    },
+
+    formataHora(date: Date){
+      if(date !== null) {
+        const hora = new Date(date).toLocaleTimeString('pt-BR', {timeZone:'America/Sao_Paulo', hour12: false})
+        return hora
+      }
+      return ''
+    },
+
     async preencheRecibo(id: number) {
       const getAPi: MovimentacaoClient = new MovimentacaoClient();
       this.teste = await getAPi.findById(id)
       console.log(this.teste)
-
     },
 
     acaoSalvar() {
@@ -284,7 +315,6 @@ export default {
         return this.save()
       }
       return this.atualizar()
-
     },
 
     resetForm() {
@@ -292,6 +322,7 @@ export default {
       this.editedItem.veiculo = {} as Veiculo,
         this.editedItem.id = 0
     },
+
     async initialize() {
       const getApi: MovimentacaoClient = new MovimentacaoClient();
       this.object = await getApi.findAll()
@@ -301,6 +332,7 @@ export default {
       const getApiCondutores: CondutorClient = new CondutorClient();
       this.listaCondutores = await getApiCondutores.findAll()
     },
+
     async listarVeiculos() {
       const getApiVeiculos: VeiculoClient = new VeiculoClient();
       this.listaVeiculos = await getApiVeiculos.findAll()
@@ -318,9 +350,7 @@ export default {
       this.editedItem = Object.assign({}, item)
     },
 
-
     finalizarItem(item) {
-
       this.editedIndex = this.object.indexOf(item)
       this.editedItem = Object.assign({}, {
         id: item.id,
@@ -341,7 +371,6 @@ export default {
         }
       ).catch((response) => this.error = response.data)
       this.closeDelete()
-
     },
 
     close() {
@@ -361,15 +390,9 @@ export default {
     },
 
     atualizar() {
-
       const postApi: MovimentacaoClient = new MovimentacaoClient();
       postApi.atualizar(this.editedItem).then(response => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
-        this.text = response.data
+        this.text = response
         this.close()
         this.error = ''
         this.$nextTick(() => {
@@ -377,7 +400,6 @@ export default {
           this.resetForm()
           this.initialize()
         })
-
       }).catch((response) => {
         this.error = response.data
       })
@@ -385,7 +407,6 @@ export default {
 
     finalizar() {
       this.editedItem.saida = new Date();
-
       const patchApi: MovimentacaoClient = new MovimentacaoClient();
       patchApi.finalizar(this.editedItem).then(response => {
           this.initialize()
@@ -393,25 +414,17 @@ export default {
           console.log(this.recibo)
           this.preencheRecibo(this.editedItem.id)
           this.text = "Finalizado"
-          this.showButton = true
-          this.modalRecibo = false
           this.snackbar = true
         }
       ).catch((response) => this.error = response.data)
-
-
     },
 
-
     save() {
-      this.editedItem.entrada = new Date();
+
+      console.log(this.editedItem.entrada)
       const postApi: MovimentacaoClient = new MovimentacaoClient();
+      this.editedItem.entrada = new Date(new Date().toLocaleString('en-US', {timeZone:'America/Sao_Paulo'}));
       postApi.cadastrar(this.editedItem).then(response => {
-        if (this.editedIndex > -1) {
-          Object.assign(this.object[this.editedIndex], this.editedItem)
-        } else {
-          this.object.push(this.editedItem)
-        }
         this.text = response.data
         this.close()
         this.error = ''
@@ -420,7 +433,6 @@ export default {
           this.resetForm()
           this.initialize()
         })
-
       }).catch((response) => {
         this.error = response.data
       })

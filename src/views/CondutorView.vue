@@ -1,4 +1,4 @@
-<template>asdasdasd
+<template>
 <tabela-condutor></tabela-condutor>
 </template>
 

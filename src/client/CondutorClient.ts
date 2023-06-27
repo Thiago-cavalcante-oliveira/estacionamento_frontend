@@ -1,5 +1,5 @@
 import axios, {AxiosInstance} from "axios";
-import {Condutor} from "@/models/condutor";
+import {Condutor, CreateCondutorDTO} from "@/models/condutor";
 
 export class CondutorClient {
     private axiosClient: AxiosInstance;
@@ -39,7 +39,7 @@ export class CondutorClient {
         }
     }
 
-    public async atualizar(condutor: Condutor): Promise<string> {
+    public async atualizar(condutor: CreateCondutorDTO): Promise<string> {
         try {
             return (await this.axiosClient.put(`/${condutor.id}`,condutor)).data
 
@@ -58,7 +58,7 @@ export class CondutorClient {
         }
     }
 
-    public async cadastrar(condutor: Condutor): Promise<void>{
+    public async cadastrar(condutor: CreateCondutorDTO): Promise<void>{
         try{
             return (await this.axiosClient.post('', condutor))
         }catch (error: any){

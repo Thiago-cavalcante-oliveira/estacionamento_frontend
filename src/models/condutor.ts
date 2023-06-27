@@ -12,4 +12,14 @@ export class Condutor extends Entitty{
         super();
     }
 
+
+
+}
+export interface CreateCondutorDTO{
+  id?: number
+  nome: string
+  cpf:string
+  telefone:string
+
+
 }

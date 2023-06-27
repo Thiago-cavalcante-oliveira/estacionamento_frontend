@@ -5,13 +5,11 @@
       :items="object"
       class="elevation-1"
     >
-
       <template v-slot:top>
         <v-toolbar
           height="100"
         >
           <v-toolbar-title
-
           >Lista de Marcas
           </v-toolbar-title>
           <v-divider
@@ -24,22 +22,22 @@
             v-model="dialog"
             max-width="800px"
           >
-            <template v-slot:activator="{ props }"
-                      class="px-10"
+            <template
+              v-slot:activator="{ props }"
+              class="px-10"
             >
               <router-link to="marcaformulario">
                 <v-btn
+                  variant="elevated"
                   size="x-large"
                   elevation="4"
-                  color="teal"
+                  color="green"
                   class="mb-2 mr-10"
-                  v-bind="props"
                 >
                   Cadastrar
                 </v-btn>
               </router-link>
             </template>
-
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
@@ -55,19 +53,15 @@
         </v-toolbar>
       </template>
       <template v-slot:item.ativo="{ item }">
-
         <v-chip v-if="item.columns.ativo === true" color="green">Ativo</v-chip>
         <v-chip v-else-if="item.columns.ativo === false" color="red">Inativado</v-chip>
-
       </template>
       <template v-slot:item.actions="{ item }">
-
         <router-link :to="{name:'marca-formulario-edit', query: {id: item.raw.id}}">
           <v-icon
             color="blue"
             size="small"
             class="me-5"
-
           >
             mdi-pencil
           </v-icon>
@@ -89,7 +83,6 @@
         </v-btn>
       </template>
     </v-data-table>
-
   </v-container>
 </template>
 
@@ -108,19 +101,24 @@ export default {
     error: '',
     dialog: false,
     dialogDelete: false,
+
     headers: [
       {title: 'ID', align: 'center', sortable: true, key: 'id'},
-      {title: 'Ativo', align: 'center', key:'ativo', sortable: true},
+      {title: 'Ativo', align: 'center', key: 'ativo', sortable: true},
       {title: 'Marca', align: 'start', sortable: true, key: 'nome'},
       {title: 'Ações', key: 'actions', sortable: false},
     ],
+
     object: [] as Marca[],
+
     editedIndex: -1,
+
     editedItem: {
       nome: '',
       id: -1,
       ativo: ''
     } as Marca,
+
     defaultItem: {
       nome: '',
       id: undefined,
@@ -152,7 +150,6 @@ export default {
 
   methods: {
 
-
     resetForm() {
       this.editedItem.nome = '';
     },
@@ -181,7 +178,7 @@ export default {
           this.object.splice(this.editedIndex, 1)
           this.text = response
           this.snackbar = true
-        this.initialize()
+          this.initialize()
         }
       ).catch((response) => this.error = response.data)
       this.closeDelete()
@@ -203,8 +200,6 @@ export default {
         this.editedIndex = -1
       })
     },
-
-
   },
 }
 </script>
